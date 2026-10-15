@@ -22,6 +22,11 @@ npm install loudness-tts
 npx loudness-tts "Dr. Smith paid \$5.50 on 4/5/2026." -o speech.wav --srt speech.srt
 ```
 
+> **The npm package is coming soon.** Until then, install the release file:
+> `npm install https://github.com/Loudness-ai/loudness-tts/releases/download/v0.1.0/loudness-tts-0.1.0.tgz`.
+> In browsers, also serve the package's `espeak-ng-data` folder yourself and pass `configure({ espeakDataUrl })` (the
+> default loads it from npm through jsDelivr).
+
 The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Voices are
 kept in `~/.cache/loudness-tts`, shared with the Python edition. Try voices first:
 [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·

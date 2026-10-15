@@ -16,9 +16,13 @@ no API key. Python and JavaScript/TypeScript. By [Loudness.ai](https://loudness.
   **OpenAI-compatible speech server** and Docker. Both editions produce the same speech.
 
 ```sh
-pip install loudness-tts            # or: npm install loudness-tts
+pip install loudness-tts
 loudness-tts "Dr. Smith paid $5.50 on 4/5/2026." -o speech.wav --srt speech.srt
 ```
+
+JavaScript: `npm install loudness-tts` (the npm package is coming soon; until then install
+[the release file](https://github.com/Loudness-ai/loudness-tts/releases/latest), see [javascript/README.md](javascript/README.md)).
+Docker: `docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts`.
 
 The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Try voices in
 the browser first: [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·
