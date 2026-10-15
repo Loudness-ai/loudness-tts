@@ -7,6 +7,7 @@ import { mkdtempSync, readFileSync, existsSync } from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import {
   AUTO_USE, LocalTTSError, NodeStore, findVoice, languages, loudness, openaiVoiceMap, resample, srt, voices, vtt, wavBytes,
@@ -121,7 +122,7 @@ test("downloads are checked against their checksum", async () => {
 });
 
 const cli = promisify(execFile);
-const run = (...args) => cli(process.execPath, [new URL("../dist/cli.js", import.meta.url).pathname, ...args]).catch((e) => e);
+const run = (...args) => cli(process.execPath, [fileURLToPath(new URL("../dist/cli.js", import.meta.url)), ...args]).catch((e) => e);
 
 test("command line", async () => {
   const listed = await run("voices", "--language", "it", "--json");
