@@ -45,6 +45,8 @@ jobs:
             org.opencontainers.image.description=Natural text to speech on your own server, OpenAI-compatible
             org.opencontainers.image.licenses=GPL-3.0-or-later
   npm:
+    # Runs once npm trusted publishing is set up for the package (repository variable NPM_TRUSTED_PUBLISHING=true).
+    if: vars.NPM_TRUSTED_PUBLISHING == 'true'
     runs-on: ubuntu-latest
     environment: npm
     permissions: {contents: read, id-token: write}   # npm trusted publishing with provenance: no token stored
