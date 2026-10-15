@@ -13,7 +13,7 @@ By [Loudness.ai](https://loudness.ai/).
 - **Fast on a CPU:** 16 to 21 times faster than real time with medium voices on an Apple M4, first streamed sentence in
   about 0.1 s. No PyTorch, no GPU, no FFmpeg needed (FFmpeg only adds MP3/Opus/AAC/FLAC output).
 - **Works where you work:** Python library, command line, an **OpenAI-compatible speech server**, Docker, and a
-  [JavaScript/TypeScript edition](https://www.npmjs.com/package/loudness-tts) for Node, Bun, Deno and browsers that produces
+  [JavaScript/TypeScript edition](https://github.com/Loudness-ai/loudness-tts/tree/main/javascript) for Node, Bun, Deno and browsers that produces
   the same speech.
 
 ```sh

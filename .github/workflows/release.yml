@@ -61,12 +61,24 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           if npm view "loudness-tts@$VERSION" version >/dev/null 2>&1; then echo "loudness-tts@$VERSION is already on npm"
           else npm publish --provenance --access public; fi
+  npm-pack:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: javascript}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: npm ci && npm run build && npm test && npm pack
+      - uses: actions/upload-artifact@v4
+        with: {name: npm-package, path: "javascript/*.tgz"}
   github-release:
-    needs: [pypi, docker]
+    needs: [pypi, docker, npm-pack]
     runs-on: ubuntu-latest
     permissions: {contents: write}
     steps:
       - uses: actions/download-artifact@v4
         with: {name: dist, path: dist/}
+      - uses: actions/download-artifact@v4
+        with: {name: npm-package, path: dist/}
       - uses: softprops/action-gh-release@v2
         with: {files: "dist/*", generate_release_notes: true}

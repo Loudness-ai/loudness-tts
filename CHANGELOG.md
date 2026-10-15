@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (2026-10-16)
+
+- JavaScript in browsers: espeak-ng's data now loads from this release on GitHub (through jsDelivr), so web pages work
+  without any setup before the npm package exists.
+- The JavaScript package file is attached to every GitHub release (`npm install <file URL>`).
+- The Python package page links to the JavaScript edition on GitHub.
+
 ## 0.1.0 (2026-10-16)
 
 First release, in two editions that produce the same speech: Python (PyPI) and JavaScript/TypeScript (npm) for Node,

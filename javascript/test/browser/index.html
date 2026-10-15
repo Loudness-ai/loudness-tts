@@ -16,9 +16,11 @@
 import { synthesize, configure, version, findVoice } from "/dist/index.js";
 const status = document.getElementById("status");
 const out = document.getElementById("out");
-// ?cdn: ONNX Runtime's files from jsDelivr (the browser default); otherwise from this server.
-configure(new URLSearchParams(location.search).has("cdn") ? { espeakDataUrl: "/espeak-ng-data/" }
-  : { espeakDataUrl: "/espeak-ng-data/", onnxWasmUrl: "/node_modules/onnxruntime-web/dist/" });
+// No parameters: everything from this server. ?cdn: the browser defaults (jsDelivr); ?cdn&espeak=URL: the defaults
+// with espeak-ng's data from URL (to try a commit before its release tag exists).
+const query = new URLSearchParams(location.search);
+if (query.has("cdn")) configure(query.get("espeak") ? { espeakDataUrl: query.get("espeak") } : {});
+else configure({ espeakDataUrl: "/espeak-ng-data/", onnxWasmUrl: "/node_modules/onnxruntime-web/dist/" });
 try {
   const voice = findVoice("auto", "en-US", true);
   status.textContent = `loudness-tts ${version}: loading ${voice.id}… (isolated: ${crossOriginIsolated})`;

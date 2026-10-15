@@ -1,6 +1,6 @@
 {
   "name": "loudness-tts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fast, natural text to speech on your own computer, server or web page: 1,683 ranked voices, numbers and dates read as words, word timings, SRT/VTT subtitles, OpenAI-compatible server. No API key.",
   "keywords": [
     "text-to-speech",

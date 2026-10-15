@@ -141,12 +141,13 @@ export class BrowserStore implements VoiceStore {
   }
 }
 
-let espeakBase = `https://cdn.jsdelivr.net/npm/loudness-tts@${VERSION}/espeak-ng-data/`;
+// This version's espeak-ng data from the GitHub repository, through jsDelivr (it does not depend on npm).
+let espeakBase = `https://cdn.jsdelivr.net/gh/Loudness-ai/loudness-tts@v${VERSION}/javascript/espeak-ng-data/`;
 let onnxBase = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 const folder = (url: string): string => (url.endsWith("/") ? url : url + "/");
 
 export interface BrowserSettings {
-  /** Where browsers load espeak-ng's data (default: this version of the npm package on jsDelivr). Copy the package's
+  /** Where browsers load espeak-ng's data (default: this version's files on jsDelivr). Copy the package's
    * espeak-ng-data folder to your site to serve it yourself. */
   espeakDataUrl?: string;
   /** Where browsers load ONNX Runtime's WebAssembly files (default: onnxruntime-web on jsDelivr). Copy
