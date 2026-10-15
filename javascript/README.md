@@ -3,6 +3,8 @@
 **Fast, natural text to speech in Node, Bun, Deno and the browser.** Free, offline after the first voice download, no
 API key, no native add-ons. By [Loudness.ai](https://loudness.ai/).
 
+**[Website](https://loudness.ai/developers/loudness-tts/)** · **[Installation guide](https://loudness.ai/developers/guides/install-loudness-tts/)** · **[Try it in your browser](https://huggingface.co/spaces/Loudness-ai/text-to-speech-browser)** · Guides for [Open WebUI](https://loudness.ai/developers/guides/open-webui-text-to-speech/), [LibreChat](https://loudness.ai/developers/guides/librechat-text-to-speech/) and [AnythingLLM](https://loudness.ai/developers/guides/anythingllm-text-to-speech/)
+
 - **1,683 ranked voices in 32 language variants:** every Piper voice that allows commercial use, scored for naturalness
   and clarity in [our open study](https://loudness.ai/research/piper-tts-voices-ranked/). `loudness-tts` picks the best voice
   for your language automatically and shows each voice's licence and credit line.
@@ -133,5 +135,5 @@ is Apache-2.0 and can be reused on its own. Voices keep their own licences. If l
 [loudness.ai](https://loudness.ai/) is appreciated (not required).
 
 Python edition: `pip install loudness-tts` ([PyPI](https://pypi.org/project/loudness-tts/)). More from Loudness.ai:
-[free online audio tools](https://loudness.ai/tools/) · [Audio Kit](https://github.com/Loudness-ai/loudness-audio-kit) ·
+[free online audio tools](https://loudness.ai/tools/) · [AI Noise Remover SDK](https://github.com/Loudness-ai/ai-noise-remover-sdk) ·
 [Research & Benchmarks](https://loudness.ai/research/) · [Hugging Face](https://huggingface.co/Loudness-ai)

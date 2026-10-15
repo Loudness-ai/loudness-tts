@@ -1,5 +1,9 @@
 # Free local voices for Open WebUI (and other OpenAI-compatible apps)
 
+Step-by-step guides are on the website: [Open WebUI](https://loudness.ai/developers/guides/open-webui-text-to-speech/),
+[LibreChat](https://loudness.ai/developers/guides/librechat-text-to-speech/),
+[AnythingLLM](https://loudness.ai/developers/guides/anythingllm-text-to-speech/).
+
 1. `pip install loudness-tts` and start the server: `loudness-tts serve --port 8880` (Docker: `docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts`).
 2. In Open WebUI: **Admin Panel → Settings → Audio → Text-to-Speech**: engine **OpenAI**, API base URL
    `http://127.0.0.1:8880/v1` (from another container: `http://host.docker.internal:8880/v1`), any API key (or the one you

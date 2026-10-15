@@ -3,6 +3,8 @@
 **Fast, natural text to speech on your own computer, server or web page.** Free, offline after the first voice download,
 no API key. Python and JavaScript/TypeScript. By [Loudness.ai](https://loudness.ai/).
 
+**[Website](https://loudness.ai/developers/loudness-tts/)** · **[Installation guide](https://loudness.ai/developers/guides/install-loudness-tts/)** · **[Try it in your browser](https://huggingface.co/spaces/Loudness-ai/text-to-speech-browser)** · Guides for [Open WebUI](https://loudness.ai/developers/guides/open-webui-text-to-speech/), [LibreChat](https://loudness.ai/developers/guides/librechat-text-to-speech/) and [AnythingLLM](https://loudness.ai/developers/guides/anythingllm-text-to-speech/)
+
 - **1,683 ranked voices in 32 language variants:** every Piper voice that allows commercial use, scored for naturalness
   and clarity in [our open study](https://loudness.ai/research/piper-tts-voices-ranked/). `loudness-tts` picks the best voice
   for your language automatically and shows each voice's licence and credit line.
@@ -25,7 +27,7 @@ JavaScript: `npm install loudness-tts` (the npm package is coming soon; until th
 Docker: `docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts`.
 
 The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Try voices in
-the browser first: [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·
+the browser first: [Free Text to Speech in Your Browser](https://huggingface.co/spaces/Loudness-ai/text-to-speech-browser) · [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·
 [Loudness.ai Text to Speech](https://loudness.ai/tools/text-to-speech/).
 
 ## Python
@@ -111,7 +113,11 @@ client.audio.speech.create(model="tts-1", voice="nova", input="Hello from my own
 ```
 
 Apps that let you set an OpenAI-compatible text-to-speech URL, such as Open WebUI, LibreChat and AnythingLLM, can use it
-directly: base URL `http://127.0.0.1:8880/v1`, any model name, a voice id or an OpenAI voice name. `response_format`
+directly: base URL `http://127.0.0.1:8880/v1`, any model name, a voice id or an OpenAI voice name. Step-by-step guides:
+[Open WebUI](https://loudness.ai/developers/guides/open-webui-text-to-speech/),
+[LibreChat](https://loudness.ai/developers/guides/librechat-text-to-speech/) and
+[AnythingLLM](https://loudness.ai/developers/guides/anythingllm-text-to-speech/) (LibreChat and AnythingLLM expect MP3: use the
+Docker image or install FFmpeg). `response_format`
 `pcm` streams 24 kHz audio while it is made; `mp3`, `opus`, `aac` and `flac` need FFmpeg. `POST /v1/tts` returns JSON with
 the audio, word timings, SRT and VTT. Text is never logged or stored.
 
@@ -151,6 +157,6 @@ If loudness-tts helps your project, a link to [loudness.ai](https://loudness.ai/
 }
 ```
 
-More from Loudness.ai: [free online audio tools](https://loudness.ai/tools/) ·
-[Audio Kit](https://github.com/Loudness-ai/loudness-audio-kit) (local noise removal and loudness normalization) ·
+More from Loudness.ai: [developer hub](https://loudness.ai/developers/) · [free online audio tools](https://loudness.ai/tools/) ·
+[AI Noise Remover SDK](https://github.com/Loudness-ai/ai-noise-remover-sdk) (local noise removal and loudness normalization) ·
 [Research & Benchmarks](https://loudness.ai/research/) · [Hugging Face](https://huggingface.co/Loudness-ai)
