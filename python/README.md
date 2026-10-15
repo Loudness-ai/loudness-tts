@@ -12,14 +12,16 @@ By [Loudness.ai](https://loudness.ai/).
 - **Ready to publish:** loudness normalized to −16 LUFS with true peak at or below −1.5 dBTP, word timings, SRT and VTT subtitles.
 - **Fast on a CPU:** 16 to 21 times faster than real time with medium voices on an Apple M4, first streamed sentence in
   about 0.1 s. No PyTorch, no GPU, no FFmpeg needed (FFmpeg only adds MP3/Opus/AAC/FLAC output).
-- **Works where you work:** Python library, command line, an **OpenAI-compatible speech server**, Docker, and (soon) npm.
+- **Works where you work:** Python library, command line, an **OpenAI-compatible speech server**, Docker, and a
+  [JavaScript/TypeScript edition](https://www.npmjs.com/package/local-tts) for Node, Bun, Deno and browsers that produces
+  the same speech.
 
 ```sh
 pip install local-tts
 local-tts "Dr. Smith paid $5.50 on 4/5/2026." -o speech.wav --srt speech.srt
 ```
 
-The first run downloads the best English (US) voice (about 60 MB, checked against its published checksum). Try voices in
+The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Try voices in
 the browser first: [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·
 [Loudness.ai Text to Speech](https://loudness.ai/tools/text-to-speech/).
 
@@ -39,7 +41,7 @@ print(speech.voice.credit)       # credit line, when the voice's licence asks fo
 for chunk in local_tts.stream("A long text is spoken sentence by sentence, so playback starts at once."):
     player.write(chunk.pcm())    # 16-bit mono PCM at chunk.sample_rate
 
-local_tts.voices(language="de", sex="female")[:3]                            # best German female voices
+local_tts.voices(language="en-US", sex="female")[:3]                         # best English (US) female voices
 ```
 
 For services, keep one engine so voices stay loaded:
@@ -71,7 +73,7 @@ voice model's own sound durations).
 ```sh
 local-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
 echo "Text from a pipe" | local-tts - > out.wav
-local-tts voices --language fr --sex female --min-score 80
+local-tts voices --language de --min-score 75
 local-tts languages
 local-tts download --language de-DE          # for offline machines and Docker images
 local-tts doctor --synthesize                # check the installation

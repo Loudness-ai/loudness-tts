@@ -1,0 +1,1082 @@
+[
+ {
+  "name": "en_US-clean100-medium-0",
+  "voice": "en_US-clean100-medium-s118",
+  "text": "Dr. Smith paid $5.50 on 4/5/2026. Call +1 555-123-4567, please.",
+  "cleaned": "Dr. Smith paid $5.50 on 4/5/2026. Call +1 555-123-4567, please.",
+  "spoken": "Doctor Smith paid 5 dollars and 50 cents on April 5th, 20 26. Call plus 1, 5 5 5, 1 2 3, 4 5 6 7, please.",
+  "samples": 204923,
+  "rate": 22050,
+  "timings": {
+   "duration": 9294,
+   "segments": [
+    [
+     0,
+     33,
+     46,
+     3924
+    ],
+    [
+     34,
+     63,
+     4379,
+     9139
+    ]
+   ],
+   "words": [
+    [
+     0,
+     3,
+     46,
+     325
+    ],
+    [
+     4,
+     9,
+     395,
+     569
+    ],
+    [
+     10,
+     14,
+     615,
+     836
+    ],
+    [
+     15,
+     20,
+     882,
+     2229
+    ],
+    [
+     21,
+     23,
+     2264,
+     2357
+    ],
+    [
+     24,
+     33,
+     2392,
+     3924
+    ],
+    [
+     34,
+     38,
+     4379,
+     4588
+    ],
+    [
+     39,
+     41,
+     4634,
+     5167
+    ],
+    [
+     42,
+     55,
+     5167,
+     8628
+    ],
+    [
+     56,
+     63,
+     8698,
+     9139
+    ]
+   ]
+  },
+  "lufs": -16.016348796941553,
+  "peak": -1.9134755944718713,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_US-clean100-medium-1",
+  "voice": "en_US-clean100-medium-s118",
+  "text": "Hello! The meeting starts at 9:30 AM, so please arrive a few minutes early.",
+  "cleaned": "Hello! The meeting starts at 9:30 AM, so please arrive a few minutes early.",
+  "spoken": "Hello! The meeting starts at 9:30 AM, so please arrive a few minutes early.",
+  "samples": 114555,
+  "rate": 22050,
+  "timings": {
+   "duration": 5195,
+   "segments": [
+    [
+     0,
+     6,
+     46,
+     499
+    ],
+    [
+     7,
+     75,
+     942,
+     5052
+    ]
+   ],
+   "words": [
+    [
+     0,
+     6,
+     46,
+     499
+    ],
+    [
+     7,
+     10,
+     942,
+     1012
+    ],
+    [
+     11,
+     18,
+     1035,
+     1314
+    ],
+    [
+     19,
+     25,
+     1395,
+     1708
+    ],
+    [
+     26,
+     28,
+     1732,
+     1790
+    ],
+    [
+     29,
+     33,
+     1824,
+     2521
+    ],
+    [
+     34,
+     37,
+     2567,
+     2718
+    ],
+    [
+     38,
+     40,
+     2718,
+     3183
+    ],
+    [
+     41,
+     47,
+     3264,
+     3624
+    ],
+    [
+     48,
+     54,
+     3624,
+     3984
+    ],
+    [
+     55,
+     56,
+     3984,
+     4123
+    ],
+    [
+     57,
+     60,
+     4146,
+     4309
+    ],
+    [
+     61,
+     68,
+     4344,
+     4611
+    ],
+    [
+     69,
+     75,
+     4680,
+     5052
+    ]
+   ]
+  },
+  "lufs": -16.044258046487435,
+  "peak": -1.9522876509009712,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_US-clean100-medium-2",
+  "voice": "en_US-clean100-medium-s118",
+  "text": "Wait... what? Really?! Yes — absolutely.\n\nA new paragraph, with a schedule and privacy notes.",
+  "cleaned": "Wait... what? Really?! Yes — absolutely.\n\nA new paragraph, with a schedule and privacy notes.",
+  "spoken": "Wait, what? Really?! Yes, absolutely. A [[nˈuː]] paragraph, with a [[skˈɛdʒuːl]] and [[pɹˈaɪvəsi]] notes.",
+  "samples": 166415,
+  "rate": 22050,
+  "timings": {
+   "duration": 7547,
+   "segments": [
+    [
+     0,
+     7,
+     81,
+     418
+    ],
+    [
+     8,
+     13,
+     872,
+     1232
+    ],
+    [
+     14,
+     22,
+     1698,
+     2163
+    ],
+    [
+     23,
+     40,
+     2617,
+     3616
+    ],
+    [
+     42,
+     93,
+     4443,
+     7392
+    ]
+   ],
+   "words": [
+    [
+     0,
+     7,
+     81,
+     418
+    ],
+    [
+     8,
+     13,
+     872,
+     1232
+    ],
+    [
+     14,
+     22,
+     1698,
+     2163
+    ],
+    [
+     23,
+     26,
+     2617,
+     2818
+    ],
+    [
+     27,
+     28,
+     2818,
+     2884
+    ],
+    [
+     29,
+     40,
+     2919,
+     3616
+    ],
+    [
+     42,
+     43,
+     4443,
+     4583
+    ],
+    [
+     44,
+     47,
+     4629,
+     4722
+    ],
+    [
+     48,
+     58,
+     4768,
+     5512
+    ],
+    [
+     59,
+     63,
+     5581,
+     5732
+    ],
+    [
+     64,
+     65,
+     5790,
+     5941
+    ],
+    [
+     66,
+     74,
+     6011,
+     6336
+    ],
+    [
+     75,
+     78,
+     6359,
+     6452
+    ],
+    [
+     79,
+     86,
+     6498,
+     6951
+    ],
+    [
+     87,
+     93,
+     6998,
+     7392
+    ]
+   ]
+  },
+  "lufs": -16.024701514989385,
+  "peak": -1.9256912256015755,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_US-clean100-medium-3",
+  "voice": "en_US-clean100-medium-s118",
+  "text": "Great job 👍 see you soon",
+  "cleaned": "Great job 👍 see you soon",
+  "spoken": "Great job see you soon.",
+  "samples": 30294,
+  "rate": 22050,
+  "timings": {
+   "duration": 1374,
+   "segments": [
+    [
+     0,
+     25,
+     46,
+     1219
+    ]
+   ],
+   "words": [
+    [
+     0,
+     5,
+     46,
+     255
+    ],
+    [
+     6,
+     9,
+     279,
+     557
+    ],
+    [
+     13,
+     16,
+     627,
+     731
+    ],
+    [
+     17,
+     20,
+     755,
+     859
+    ],
+    [
+     21,
+     25,
+     906,
+     1219
+    ]
+   ]
+  },
+  "lufs": -16.04959684606832,
+  "peak": -1.9092023612898985,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_US-clean100-medium-4",
+  "voice": "en_US-clean100-medium-s118",
+  "text": "this sentence keeps going without any punctuation because people often paste long transcripts or captions that were never punctuated and the voice has to read all of it in one breath which can make the timing drift and the words run together so we want to know where it breaks",
+  "cleaned": "this sentence keeps going without any punctuation because people often paste long transcripts or captions that were never punctuated and the voice has to read all of it in one breath which can make the timing drift and the words run together so we want to know where it breaks",
+  "spoken": "this sentence keeps going without any punctuation because people often paste long transcripts or captions that were never punctuated, and the voice has to read all of it in one breath which can make the timing drift, and the words run together so we want to know where it breaks.",
+  "samples": 283762,
+  "rate": 22050,
+  "timings": {
+   "duration": 12869,
+   "segments": [
+    [
+     0,
+     132,
+     70,
+     6177
+    ],
+    [
+     133,
+     214,
+     6398,
+     9881
+    ],
+    [
+     215,
+     276,
+     10090,
+     12714
+    ]
+   ],
+   "words": [
+    [
+     0,
+     4,
+     70,
+     221
+    ],
+    [
+     5,
+     13,
+     255,
+     546
+    ],
+    [
+     14,
+     19,
+     615,
+     836
+    ],
+    [
+     20,
+     25,
+     894,
+     1103
+    ],
+    [
+     26,
+     33,
+     1126,
+     1382
+    ],
+    [
+     34,
+     37,
+     1405,
+     1544
+    ],
+    [
+     38,
+     49,
+     1602,
+     2206
+    ],
+    [
+     50,
+     57,
+     2229,
+     2508
+    ],
+    [
+     58,
+     64,
+     2554,
+     2798
+    ],
+    [
+     65,
+     70,
+     2868,
+     3158
+    ],
+    [
+     71,
+     76,
+     3193,
+     3483
+    ],
+    [
+     77,
+     81,
+     3541,
+     3727
+    ],
+    [
+     82,
+     93,
+     3785,
+     4354
+    ],
+    [
+     94,
+     96,
+     4435,
+     4516
+    ],
+    [
+     97,
+     105,
+     4563,
+     4992
+    ],
+    [
+     106,
+     110,
+     5016,
+     5085
+    ],
+    [
+     111,
+     115,
+     5108,
+     5190
+    ],
+    [
+     116,
+     121,
+     5236,
+     5445
+    ],
+    [
+     122,
+     132,
+     5503,
+     6177
+    ],
+    [
+     133,
+     136,
+     6398,
+     6525
+    ],
+    [
+     137,
+     140,
+     6549,
+     6618
+    ],
+    [
+     141,
+     146,
+     6653,
+     6920
+    ],
+    [
+     147,
+     150,
+     6955,
+     7106
+    ],
+    [
+     151,
+     153,
+     7164,
+     7245
+    ],
+    [
+     154,
+     158,
+     7280,
+     7443
+    ],
+    [
+     159,
+     162,
+     7501,
+     7686
+    ],
+    [
+     163,
+     165,
+     7733,
+     7803
+    ],
+    [
+     166,
+     168,
+     7826,
+     7884
+    ],
+    [
+     169,
+     171,
+     7919,
+     7988
+    ],
+    [
+     172,
+     175,
+     8035,
+     8232
+    ],
+    [
+     176,
+     182,
+     8290,
+     8511
+    ],
+    [
+     183,
+     188,
+     8534,
+     8685
+    ],
+    [
+     189,
+     192,
+     8720,
+     8824
+    ],
+    [
+     193,
+     197,
+     8847,
+     8987
+    ],
+    [
+     198,
+     201,
+     9033,
+     9091
+    ],
+    [
+     202,
+     208,
+     9126,
+     9474
+    ],
+    [
+     209,
+     214,
+     9521,
+     9881
+    ],
+    [
+     215,
+     218,
+     10090,
+     10230
+    ],
+    [
+     219,
+     222,
+     10253,
+     10323
+    ],
+    [
+     223,
+     228,
+     10369,
+     10648
+    ],
+    [
+     229,
+     232,
+     10706,
+     10857
+    ],
+    [
+     233,
+     241,
+     10891,
+     11286
+    ],
+    [
+     242,
+     244,
+     11356,
+     11518
+    ],
+    [
+     245,
+     247,
+     11553,
+     11623
+    ],
+    [
+     248,
+     252,
+     11658,
+     11774
+    ],
+    [
+     253,
+     255,
+     11809,
+     11878
+    ],
+    [
+     256,
+     260,
+     11901,
+     12041
+    ],
+    [
+     261,
+     266,
+     12064,
+     12180
+    ],
+    [
+     267,
+     269,
+     12203,
+     12250
+    ],
+    [
+     270,
+     276,
+     12296,
+     12714
+    ]
+   ]
+  },
+  "lufs": -16.021643342507993,
+  "peak": -1.9469779637520535,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_IE-jenny-medium-0",
+  "voice": "en_IE-jenny-medium",
+  "text": "The 1990s, the 21st century, and chapter IV.",
+  "cleaned": "The 1990s, the 21st century, and chapter IV.",
+  "spoken": "The 19 nineties, the 21st century, and chapter 4.",
+  "samples": 71254,
+  "rate": 22050,
+  "timings": {
+   "duration": 3231,
+   "segments": [
+    [
+     0,
+     44,
+     58,
+     3088
+    ]
+   ],
+   "words": [
+    [
+     0,
+     3,
+     58,
+     104
+    ],
+    [
+     4,
+     10,
+     139,
+     1068
+    ],
+    [
+     11,
+     14,
+     1138,
+     1184
+    ],
+    [
+     15,
+     19,
+     1242,
+     1811
+    ],
+    [
+     20,
+     28,
+     1834,
+     2322
+    ],
+    [
+     29,
+     32,
+     2345,
+     2415
+    ],
+    [
+     33,
+     40,
+     2438,
+     2775
+    ],
+    [
+     41,
+     44,
+     2833,
+     3088
+    ]
+   ]
+  },
+  "lufs": -15.999999716726963,
+  "peak": -2.56087617433745,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "en_IE-jenny-medium-1",
+  "voice": "en_IE-jenny-medium",
+  "text": "It costs €12.99 with 20% VAT.",
+  "cleaned": "It costs €12.99 with 20% VAT.",
+  "spoken": "It costs 12 euros and 99 cents with 20% VAT.",
+  "samples": 80214,
+  "rate": 22050,
+  "timings": {
+   "duration": 3638,
+   "segments": [
+    [
+     0,
+     29,
+     70,
+     3495
+    ]
+   ],
+   "words": [
+    [
+     0,
+     2,
+     70,
+     151
+    ],
+    [
+     3,
+     8,
+     221,
+     430
+    ],
+    [
+     9,
+     15,
+     476,
+     2183
+    ],
+    [
+     16,
+     20,
+     2241,
+     2403
+    ],
+    [
+     21,
+     24,
+     2403,
+     3111
+    ],
+    [
+     25,
+     29,
+     3111,
+     3495
+    ]
+   ]
+  },
+  "lufs": -16.00000034589503,
+  "peak": -3.1951087011551604,
+  "metrics": "exact",
+  "repeatable": true
+ },
+ {
+  "name": "de_DE-mls-medium-0",
+  "voice": "de_DE-mls-medium-s162",
+  "text": "Guten Tag! Das Treffen beginnt am Montagmorgen, also komm bitte ein paar Minuten früher.",
+  "cleaned": "Guten Tag! Das Treffen beginnt am Montagmorgen, also komm bitte ein paar Minuten früher.",
+  "spoken": "Guten Tag! Das Treffen beginnt am Montagmorgen, also komm bitte ein paar Minuten früher.",
+  "samples": 181115,
+  "rate": 22050,
+  "timings": {
+   "duration": 8214,
+   "segments": [
+    [
+     0,
+     10,
+     186,
+     2125
+    ],
+    [
+     11,
+     88,
+     2916,
+     7978
+    ]
+   ],
+   "words": [
+    [
+     0,
+     5,
+     186,
+     1045
+    ],
+    [
+     6,
+     10,
+     1091,
+     2125
+    ],
+    [
+     11,
+     14,
+     2916,
+     3090
+    ],
+    [
+     15,
+     22,
+     3194,
+     3578
+    ],
+    [
+     23,
+     30,
+     3612,
+     4042
+    ],
+    [
+     31,
+     33,
+     4088,
+     4251
+    ],
+    [
+     34,
+     47,
+     4297,
+     5412
+    ],
+    [
+     48,
+     52,
+     5540,
+     5911
+    ],
+    [
+     53,
+     57,
+     5981,
+     6225
+    ],
+    [
+     58,
+     63,
+     6283,
+     6492
+    ],
+    [
+     64,
+     67,
+     6550,
+     6712
+    ],
+    [
+     68,
+     72,
+     6770,
+     6991
+    ],
+    [
+     73,
+     80,
+     7037,
+     7548
+    ],
+    [
+     81,
+     88,
+     7606,
+     7978
+    ]
+   ]
+  },
+  "lufs": -16.01566515316212,
+  "peak": -1.9714740048437298,
+  "metrics": "exact",
+  "repeatable": false
+ },
+ {
+  "name": "en_US-libritts-high-0",
+  "voice": "en_US-libritts-high-s130",
+  "text": "Could you tell me where the nearest train station is?",
+  "cleaned": "Could you tell me where the nearest train station is?",
+  "spoken": "Could you tell me where the nearest train station is?",
+  "samples": 46166,
+  "rate": 22050,
+  "timings": {
+   "duration": 2094,
+   "segments": [
+    [
+     0,
+     53,
+     46,
+     1916
+    ]
+   ],
+   "words": [
+    [
+     0,
+     5,
+     46,
+     128
+    ],
+    [
+     6,
+     9,
+     151,
+     221
+    ],
+    [
+     10,
+     14,
+     255,
+     372
+    ],
+    [
+     15,
+     17,
+     395,
+     488
+    ],
+    [
+     18,
+     23,
+     511,
+     604
+    ],
+    [
+     24,
+     27,
+     639,
+     685
+    ],
+    [
+     28,
+     35,
+     708,
+     929
+    ],
+    [
+     36,
+     41,
+     952,
+     1126
+    ],
+    [
+     42,
+     49,
+     1149,
+     1544
+    ],
+    [
+     50,
+     53,
+     1660,
+     1916
+    ]
+   ]
+  },
+  "lufs": -16.00000011075698,
+  "peak": -2.9298077995626586,
+  "metrics": "exact",
+  "repeatable": true
+ }
+]

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+src/version.ts
+src/voices-data.ts
+espeak-ng-data/*
+!espeak-ng-data/MANIFEST.json
+espeak/.build/
+LICENSE
+LICENSE-APACHE
+NOTICE
+*.tgz

@@ -1,7 +1,7 @@
 # local-tts
 
-**Fast, natural text to speech on your own computer or server.** Free, offline after the first voice download, no API key.
-By [Loudness.ai](https://loudness.ai/).
+**Fast, natural text to speech on your own computer, server or web page.** Free, offline after the first voice download,
+no API key. Python and JavaScript/TypeScript. By [Loudness.ai](https://loudness.ai/).
 
 - **1,683 ranked voices in 32 language variants:** every Piper voice that allows commercial use, scored for naturalness
   and clarity in [our open study](https://loudness.ai/research/piper-tts-voices-ranked/). `local-tts` picks the best voice
@@ -12,14 +12,15 @@ By [Loudness.ai](https://loudness.ai/).
 - **Ready to publish:** loudness normalized to −16 LUFS with true peak at or below −1.5 dBTP, word timings, SRT and VTT subtitles.
 - **Fast on a CPU:** 16 to 21 times faster than real time with medium voices on an Apple M4, first streamed sentence in
   about 0.1 s. No PyTorch, no GPU, no FFmpeg needed (FFmpeg only adds MP3/Opus/AAC/FLAC output).
-- **Works where you work:** Python library, command line, an **OpenAI-compatible speech server**, Docker, and (soon) npm.
+- **Works where you work:** Python, JavaScript and TypeScript (Node, Bun, Deno and browsers), command line, an
+  **OpenAI-compatible speech server** and Docker. Both editions produce the same speech.
 
 ```sh
-pip install local-tts
+pip install local-tts            # or: npm install local-tts
 local-tts "Dr. Smith paid $5.50 on 4/5/2026." -o speech.wav --srt speech.srt
 ```
 
-The first run downloads the best English (US) voice (about 60 MB, checked against its published checksum). Try voices in
+The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Try voices in
 the browser first: [Piper Voice Explorer](https://huggingface.co/spaces/Loudness-ai/piper-voice-explorer) ·
 [Loudness.ai Text to Speech](https://loudness.ai/tools/text-to-speech/).
 
@@ -39,7 +40,7 @@ print(speech.voice.credit)       # credit line, when the voice's licence asks fo
 for chunk in local_tts.stream("A long text is spoken sentence by sentence, so playback starts at once."):
     player.write(chunk.pcm())    # 16-bit mono PCM at chunk.sample_rate
 
-local_tts.voices(language="de", sex="female")[:3]                            # best German female voices
+local_tts.voices(language="en-US", sex="female")[:3]                         # best English (US) female voices
 ```
 
 For services, keep one engine so voices stay loaded:
@@ -66,12 +67,26 @@ speech = tts.synthesize(text, voice="en_US-libritts-high-s118", speed=1.1, pause
 Word timings are estimated from the text by default; `pip install "local-tts[timings]"` makes them exact (taken from the
 voice model's own sound durations).
 
+## JavaScript and TypeScript
+
+```js
+import { speak, synthesize, stream } from "local-tts";      // npm install local-tts · Deno: "npm:local-tts"
+
+await speak("Hello! The meeting starts at 9:30 AM.", "hello.wav");                // Node, Bun, Deno
+const speech = await synthesize("Llegamos el 15/10/2026 a las 10:30.", { language: "es-ES" });
+await speak("Hello from this page!");                                             // in a browser: plays it
+```
+
+The same engine compiled to WebAssembly (ONNX Runtime Web and espeak-ng), so it installs the same everywhere and also runs
+inside web pages, on the visitor's device. Phonemes, text preparation and word timings match the Python edition exactly
+(tested on 8,609 texts and every voice model). Details: [javascript/README.md](javascript/README.md).
+
 ## Command line
 
 ```sh
 local-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
 echo "Text from a pipe" | local-tts - > out.wav
-local-tts voices --language fr --sex female --min-score 80
+local-tts voices --language de --min-score 75
 local-tts languages
 local-tts download --language de-DE          # for offline machines and Docker images
 local-tts doctor --synthesize                # check the installation

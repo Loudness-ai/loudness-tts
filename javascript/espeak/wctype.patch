@@ -1,0 +1,12 @@
+diff --git a/src/include/compat/wctype.h b/src/include/compat/wctype.h
+index de859e36..ffe25da1 100644
+--- a/src/include/compat/wctype.h
++++ b/src/include/compat/wctype.h
+@@ -29,6 +29,7 @@
+ #pragma GCC system_header // Silence "warning: #include_next is a GCC extension"
+ #include_next <wctype.h>
+ #endif
++#include <wchar.h> // declare the libc isw* functions before they are renamed below (musl/WebAssembly)
+ 
+ #include <ucd/ucd.h>
+ 

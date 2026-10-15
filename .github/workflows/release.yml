@@ -44,8 +44,22 @@ jobs:
             org.opencontainers.image.source=https://github.com/Loudness-ai/local-tts
             org.opencontainers.image.description=Natural text to speech on your own server, OpenAI-compatible
             org.opencontainers.image.licenses=GPL-3.0-or-later
+  npm:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions: {contents: read, id-token: write}   # npm trusted publishing with provenance: no token stored
+    defaults: {run: {working-directory: javascript}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "24", registry-url: "https://registry.npmjs.org"}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install piper-tts==1.8.0
+      - run: npm ci && node scripts/espeak-data.mjs && npm run build && npm test
+      - run: npm publish --provenance --access public
   github-release:
-    needs: [pypi, docker]
+    needs: [pypi, docker, npm]
     runs-on: ubuntu-latest
     permissions: {contents: write}
     steps:

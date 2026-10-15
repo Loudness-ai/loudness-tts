@@ -29,3 +29,42 @@ jobs:
       - run: local-tts download en_US-clean100-medium -q
       - run: pytest -q
       - run: local-tts doctor --synthesize
+  javascript:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ["20", "22", "24"]
+    runs-on: ${{ matrix.os }}
+    defaults: {run: {working-directory: javascript}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}", cache: npm, cache-dependency-path: javascript/package-lock.json}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install piper-tts==1.8.0    # espeak-ng data, checked against espeak-ng-data/MANIFEST.json
+      - run: npm ci
+      - run: node scripts/espeak-data.mjs
+      - run: npm run build
+      - run: npm test
+  javascript-synthesis:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: javascript}}
+    env: {LOCAL_TTS_HOME: "${{ github.workspace }}/voices"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22", cache: npm, cache-dependency-path: javascript/package-lock.json}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install piper-tts==1.8.0
+      - run: npm ci && node scripts/espeak-data.mjs && npm run build
+      - run: node dist/cli.js download en_US-clean100-medium en_IE-jenny-medium -q
+      - run: npm test
+      - run: node dist/cli.js doctor --synthesize
+      - uses: oven-sh/setup-bun@v2
+      - run: bun test/smoke.mjs
+      - uses: denoland/setup-deno@v2
+        with: {deno-version: v2.x}
+      - run: deno run -A test/smoke.mjs

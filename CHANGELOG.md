@@ -2,7 +2,9 @@
 
 ## 0.1.0 (2026-10-16)
 
-First release of the Python edition.
+First release, in two editions that produce the same speech: Python (PyPI) and JavaScript/TypeScript (npm) for Node,
+Bun, Deno and browsers. The JavaScript edition runs on WebAssembly (espeak-ng built from Piper's commit, ONNX Runtime
+Web) with no native add-ons; its phonemes, text preparation and word timings are tested against the Python edition.
 
 - Text to speech with every commercially usable Piper voice (1,683 voices, 32 language variants), ranked by
   Loudness.ai's open voice study; automatic best-voice choice per language; licences and credit lines built in.
