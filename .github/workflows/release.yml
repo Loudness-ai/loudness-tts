@@ -54,9 +54,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: "24", registry-url: "https://registry.npmjs.org"}
       - run: npm ci && node scripts/espeak-data.mjs && npm run build && npm test
-      - run: npm publish --provenance --access public
+      - name: Publish (skipped when this version is already on npm)
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "loudness-tts@$VERSION" version >/dev/null 2>&1; then echo "loudness-tts@$VERSION is already on npm"
+          else npm publish --provenance --access public; fi
   github-release:
-    needs: [pypi, docker, npm]
+    needs: [pypi, docker]
     runs-on: ubuntu-latest
     permissions: {contents: write}
     steps:
