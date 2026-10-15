@@ -185,6 +185,7 @@ class TTS:
         else:
             onnx_path, config_path = ensure_model(info.model, root=self.root, offline=self.offline, progress=self.progress)
         model_file, aligned = self._aligned(onnx_path)
+        onnxruntime.set_default_logger_severity(3)  # errors only: no hardware-discovery chatter on stderr
         options = onnxruntime.SessionOptions()
         options.intra_op_num_threads = self.threads
         options.inter_op_num_threads = 1
