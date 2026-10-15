@@ -4,12 +4,12 @@ export type ErrorCode = "VOICE_NOT_FOUND" | "DOWNLOAD_FAILED" | "CHECKSUM_MISMAT
   | "TEXT_TOO_LONG" | "NOTHING_TO_SPEAK" | "OPTION_INVALID" | "CANCELLED" | "TIMEOUT" | "ENGINE_FAILED"
   | "FORMAT_UNAVAILABLE" | "NOT_AVAILABLE_HERE";
 
-/** Every error local-tts throws: a stable `code` for programs and a plain message for people. */
-export class LocalTTSError extends Error {
+/** Every error loudness-tts throws: a stable `code` for programs and a plain message for people. */
+export class TTSError extends Error {
   readonly code: ErrorCode;
   constructor(code: ErrorCode, message: string) {
     super(message);
-    this.name = "LocalTTSError";
+    this.name = "TTSError";
     this.code = code;
   }
   toJSON(): { code: ErrorCode; message: string } {
@@ -17,7 +17,7 @@ export class LocalTTSError extends Error {
   }
 }
 
-export class CancelledError extends LocalTTSError {
+export class CancelledError extends TTSError {
   constructor(message = "Speech generation was cancelled.") {
     super("CANCELLED", message);
     this.name = "CancelledError";

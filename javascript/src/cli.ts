@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Command line: `local-tts "Hello" -o hello.wav`. Run `local-tts --help`.
+// Command line: `loudness-tts "Hello" -o hello.wav`. Run `loudness-tts --help`.
 // Commands: say (default), voices, languages, download, serve, cache, doctor.
 // Exit codes: 0 success, 1 error (message on stderr; --json prints {"error": {code, message}}), 130 interrupted.
 import { writeFile } from "node:fs/promises";
@@ -8,29 +8,29 @@ import os from "node:os";
 import path from "node:path";
 import { parseArgs, type ParseArgsConfig } from "node:util";
 import {
-  cacheDir, downloadedModels, encode, ffmpegPath, findVoice, languages, LocalTTSError, modelInfo, removeModel, serve,
+  cacheDir, downloadedModels, encode, ffmpegPath, findVoice, languages, TTSError, modelInfo, removeModel, serve,
   TTS, version, voices, type Progress, type SpeakOptions, type Voice,
 } from "./node.js";
 import { platform } from "./platform.js";
 
 const COMMANDS = new Set(["say", "voices", "languages", "download", "serve", "cache", "doctor"]);
 
-const HELP = `local-tts ${version}: natural text to speech on your own computer or server.
+const HELP = `loudness-tts ${version}: natural text to speech on your own computer or server.
 
 Usage:
-  local-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
-  echo "Text from a pipe" | local-tts - > out.wav
-  local-tts voices [--language fr] [--sex female] [--min-score 80] [--limit 20] [--json]
-  local-tts languages [--json]
-  local-tts download [VOICE ...] [--language de-DE]      for offline machines and Docker images
-  local-tts serve [--port 8880] [--host 0.0.0.0 --api-key SECRET] [--cors ORIGIN] [--workers 1]
-  local-tts cache path|list|remove [MODEL ...]
-  local-tts doctor [--synthesize]
+  loudness-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
+  echo "Text from a pipe" | loudness-tts - > out.wav
+  loudness-tts voices [--language fr] [--sex female] [--min-score 80] [--limit 20] [--json]
+  loudness-tts languages [--json]
+  loudness-tts download [VOICE ...] [--language de-DE]      for offline machines and Docker images
+  loudness-tts serve [--port 8880] [--host 0.0.0.0 --api-key SECRET] [--cors ORIGIN] [--workers 1]
+  loudness-tts cache path|list|remove [MODEL ...]
+  loudness-tts doctor [--synthesize]
 
 Speech options: --pause short|normal|long|SECONDS, --expressiveness 0.5-1.5, --rhythm 0.5-1.5, --raw (no text
 preparation), --no-normalize, --target-lufs -16, --bit-depth 16|24, --format wav|pcm|mp3|opus|aac|flac.
 Common options: --threads N, --offline, --quiet, --json.
-Voices: https://loudness.ai/research/piper-tts-voices-ranked/ · Docs: https://github.com/Loudness-ai/local-tts`;
+Voices: https://loudness.ai/research/piper-tts-voices-ranked/ · Docs: https://github.com/Loudness-ai/loudness-tts`;
 
 const COMMON: ParseArgsConfig["options"] = {
   threads: { type: "string" }, offline: { type: "boolean" }, quiet: { type: "boolean", short: "q" },
@@ -78,7 +78,7 @@ async function say(a: Args, positionals: string[]): Promise<void> {
   const text = given === undefined || given === "-" ? await readStdin() : given;
   const output = a.output as string | undefined;
   const format = (a.format as string) || (output ? path.extname(output).slice(1).toLowerCase() : "wav") || "wav";
-  if (!output && process.stdout.isTTY) throw new LocalTTSError("OPTION_INVALID", "Give an output file with -o speech.wav (or pipe the output).");
+  if (!output && process.stdout.isTTY) throw new TTSError("OPTION_INVALID", "Give an output file with -o speech.wav (or pipe the output).");
   const pause = a.pause === undefined ? undefined : ["short", "normal", "long"].includes(a.pause as string)
     ? (a.pause as SpeakOptions["pause"]) : Number(a.pause);
   const speech = await engine(a).synthesize(text, { speed: num(a.speed), pause, expressiveness: num(a.expressiveness),
@@ -151,13 +151,13 @@ async function cache(a: Args, positionals: string[]): Promise<void> {
   if (action === "path") console.log(cacheDir());
   else if (action === "list") for (const m of await downloadedModels()) console.log(m);
   else if (action === "remove") for (const m of models) console.log(`${m}: ${(await removeModel(m)) ? "removed" : "not in the cache"}`);
-  else throw new LocalTTSError("OPTION_INVALID", "Use: local-tts cache path|list|remove [MODEL ...]");
+  else throw new TTSError("OPTION_INVALID", "Use: loudness-tts cache path|list|remove [MODEL ...]");
 }
 
 async function doctor(a: Args): Promise<void> {
   const ort = await import("onnxruntime-web").then((m) => m.env.versions?.web ?? "installed", (e) => `missing: ${String(e)}`);
   const checks: Record<string, unknown> = {
-    local_tts: version, node: process.versions.node, platform: `${os.platform()} ${os.arch()}`, cache_dir: cacheDir(),
+    loudness_tts: version, node: process.versions.node, platform: `${os.platform()} ${os.arch()}`, cache_dir: cacheDir(),
     ffmpeg: ffmpegPath() ?? "not found (wav and pcm still work)", onnxruntime_web: ort, word_timings: "exact",
     downloaded_voices: await downloadedModels(),
   };
@@ -174,7 +174,7 @@ async function doctor(a: Args): Promise<void> {
 export async function main(argv = process.argv.slice(2)): Promise<number> {
   argv = [...argv];
   if (argv[0] === "--version" || argv[0] === "-V") {
-    console.log(`local-tts ${version}`);
+    console.log(`loudness-tts ${version}`);
     return 0;
   }
   if (!argv.length || argv[0] === "--help" || argv[0] === "-h") {
@@ -201,10 +201,10 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
     else if (command === "doctor") await doctor(a);
     return 0;
   } catch (error) {
-    const known = error instanceof LocalTTSError ? error
-      : new LocalTTSError("OPTION_INVALID", error instanceof Error ? error.message : String(error));
+    const known = error instanceof TTSError ? error
+      : new TTSError("OPTION_INVALID", error instanceof Error ? error.message : String(error));
     if (a.json || argv.includes("--json")) console.log(JSON.stringify({ error: known.toJSON() }));
-    else err(`local-tts: ${known.message}\n`);
+    else err(`loudness-tts: ${known.message}\n`);
     return 1;
   }
 }

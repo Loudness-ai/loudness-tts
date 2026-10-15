@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 Asad Shehzad / Loudness.ai.
-// A line-by-line port of ttsprep (local_tts/textprep.py in the Python edition), the text preparation layer of the
+// A line-by-line port of ttsprep (loudness_tts/textprep.py in the Python edition), the text preparation layer of the
 // Loudness.ai speech engine (https://loudness.ai/research/piper-tts-text-normalization/). This file stays under the
-// Apache License 2.0; the rest of local-tts is GPL-3.0-or-later. Its output is tested against the Python edition.
+// Apache License 2.0; the rest of loudness-tts is GPL-3.0-or-later. Its output is tested against the Python edition.
 //
 // Turns what a person typed into what the voice should say. Written forms that the phonemizer (espeak-ng) reads badly
 // become words: abbreviations, money, dates, times, decades, units, ranges, phone numbers, fractions and Roman

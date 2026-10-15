@@ -12,7 +12,7 @@ import http from "node:http";
 import "./node-platform.js";
 import { findVoice, voices } from "./catalog.js";
 import { TTS } from "./engine.js";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { CONTENT_TYPES, PCM_RATE, encode, ffmpegPath } from "./formats.js";
 import { pcm16, resample } from "./speech.js";
 import { VERSION } from "./version.js";
@@ -31,7 +31,7 @@ export interface ServeOptions {
   tts?: TTS;
   /** Syntheses at the same time (default 1); others wait up to queueSeconds. */
   workers?: number;
-  /** Require this bearer token (default: $LOCAL_TTS_API_KEY). */
+  /** Require this bearer token (default: $LOUDNESS_TTS_API_KEY). */
   apiKey?: string;
   /** Allow this browser origin, e.g. "http://localhost:3000" or "*". */
   cors?: string;
@@ -80,18 +80,18 @@ function readBody(req: http.IncomingMessage): Promise<Record<string, unknown>> {
     req.on("data", (b: Buffer) => {
       size += b.length;
       if (size > MAX_BODY) {
-        reject(new LocalTTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB."));
+        reject(new TTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB."));
         req.destroy();
       } else parts.push(b);
     });
     req.on("end", () => {
-      if (!size) return reject(new LocalTTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB."));
+      if (!size) return reject(new TTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB."));
       try {
         const body = JSON.parse(Buffer.concat(parts).toString("utf8"));
-        if (!body || typeof body !== "object" || Array.isArray(body)) reject(new LocalTTSError("TEXT_INVALID", "Send a JSON object."));
+        if (!body || typeof body !== "object" || Array.isArray(body)) reject(new TTSError("TEXT_INVALID", "Send a JSON object."));
         else resolve(body);
       } catch {
-        reject(new LocalTTSError("TEXT_INVALID", "Send valid JSON."));
+        reject(new TTSError("TEXT_INVALID", "Send valid JSON."));
       }
     });
     req.on("error", reject);
@@ -101,7 +101,7 @@ function readBody(req: http.IncomingMessage): Promise<Record<string, unknown>> {
 /** Creates the server (not yet listening). */
 export function createServer(options: ServeOptions = {}): http.Server {
   const tts = options.tts ?? new TTS();
-  const apiKey = options.apiKey ?? process.env.LOCAL_TTS_API_KEY ?? "";
+  const apiKey = options.apiKey ?? process.env.LOUDNESS_TTS_API_KEY ?? "";
   const cors = options.cors ?? "";
   const slots = new Slots(options.workers ?? 1);
   const queueSeconds = options.queueSeconds ?? 120;
@@ -127,7 +127,7 @@ export function createServer(options: ServeOptions = {}): http.Server {
     let speed = body.speed as number | undefined;
     if (speed !== undefined && speed !== null) {
       speed = Number(speed);
-      if (Number.isNaN(speed)) throw new LocalTTSError("OPTION_INVALID", "speed must be a number.");
+      if (Number.isNaN(speed)) throw new TTSError("OPTION_INVALID", "speed must be a number.");
       speed = Math.min(2.0, Math.max(0.5, speed)); // OpenAI allows 0.25-4; Piper sounds right within 0.5-2
     }
     const extra = Object.fromEntries(["language", "pause", "expressiveness", "rhythm"]
@@ -147,8 +147,8 @@ export function createServer(options: ServeOptions = {}): http.Server {
         if (url.pathname === "/health") return json(res, 200, { status: "ok", version: VERSION, ffmpeg: !!ffmpegPath() });
         if (!authorized(req)) return error(res, 401, "UNAUTHORIZED", "Missing or wrong API key.");
         if (url.pathname === "/v1/models") {
-          return json(res, 200, { object: "list", data: ["local-tts", "tts-1", "tts-1-hd", "gpt-4o-mini-tts"]
-            .map((id) => ({ id, object: "model", owned_by: "local-tts" })) });
+          return json(res, 200, { object: "list", data: ["loudness-tts", "tts-1", "tts-1-hd", "gpt-4o-mini-tts"]
+            .map((id) => ({ id, object: "model", owned_by: "loudness-tts" })) });
         }
         if (url.pathname === "/v1/audio/voices" || url.pathname === "/v1/voices") {
           const found = voices({ language: url.searchParams.get("language"), sex: url.searchParams.get("sex") });
@@ -197,7 +197,7 @@ export function createServer(options: ServeOptions = {}): http.Server {
       }
     } catch (e) {
       if (res.headersSent) return void res.destroy();
-      if (e instanceof LocalTTSError) error(res, STATUS[e.code] ?? 500, e.code, e.message);
+      if (e instanceof TTSError) error(res, STATUS[e.code] ?? 500, e.code, e.message);
       else error(res, 500, "ENGINE_FAILED", "Speech generation failed."); // never leak internals to clients
     }
   });
@@ -217,7 +217,7 @@ export async function serve(options: ServeOptions = {}): Promise<http.Server> {
   if (!options.quiet) {
     const address = server.address();
     const shown = typeof address === "object" && address ? address.port : port;
-    console.log(`local-tts ${VERSION} serving on http://${host}:${shown}  (OpenAI-compatible: /v1/audio/speech)`);
+    console.log(`loudness-tts ${VERSION} serving on http://${host}:${shown}  (OpenAI-compatible: /v1/audio/speech)`);
   }
   return server;
 }

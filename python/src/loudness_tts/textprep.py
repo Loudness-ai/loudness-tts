@@ -2,7 +2,7 @@
 # Copyright 2026 Asad Shehzad / Loudness.ai.
 # Vendored unchanged from ttsprep (https://loudness.ai/research/piper-tts-text-normalization/), the text
 # preparation layer of the Loudness.ai speech engine. This file stays under the Apache License 2.0 (see
-# LICENSE-APACHE in this package); the rest of local-tts is GPL-3.0-or-later.
+# LICENSE-APACHE in this package); the rest of loudness-tts is GPL-3.0-or-later.
 """Text preparation for the Loudness.ai speech engine.
 
 Turns what a visitor typed into what the voice should say. Written forms that the

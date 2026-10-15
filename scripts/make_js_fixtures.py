@@ -13,8 +13,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "python" / "src"))
 
-from local_tts import textprep  # noqa: E402
-from local_tts.engine import clean_text  # noqa: E402
+from loudness_tts import textprep  # noqa: E402
+from loudness_tts.engine import clean_text  # noqa: E402
 from piper import PiperVoice  # noqa: E402
 from piper.config import PiperConfig  # noqa: E402
 from piper.phonemize_espeak import ESPEAK_DATA_DIR  # noqa: E402

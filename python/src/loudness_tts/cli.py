@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Command line: ``local-tts "Hello" -o hello.wav``. Run ``local-tts --help`` or ``local-tts COMMAND --help``.
+"""Command line: ``loudness-tts "Hello" -o hello.wav``. Run ``loudness-tts --help`` or ``loudness-tts COMMAND --help``.
 
 Commands: say (default), voices, languages, download, serve, cache, doctor.
 Exit codes: 0 success, 1 error (message on stderr; --json prints {"error": {code, message}}), 130 interrupted.
@@ -17,7 +17,7 @@ from . import __version__
 from .catalog import find_voice, languages, voices
 from .downloader import cache_dir, downloaded_models, ensure_model, remove_model
 from .engine import TTS
-from .errors import LocalTTSError
+from .errors import TTSError
 from .formats import encode, ffmpeg_path
 
 COMMANDS = {"say", "voices", "languages", "download", "serve", "cache", "doctor"}
@@ -40,7 +40,7 @@ def cmd_say(args):
     text = sys.stdin.read() if args.text in (None, "-") else args.text
     fmt = args.format or (os.path.splitext(args.output)[1].lstrip(".").lower() if args.output else "wav") or "wav"
     if not args.output and sys.stdout.isatty():
-        raise LocalTTSError("OPTION_INVALID", "Give an output file with -o speech.wav (or pipe the output).")
+        raise TTSError("OPTION_INVALID", "Give an output file with -o speech.wav (or pipe the output).")
     speech = _engine(args).synthesize(text, speed=args.speed, pause=args.pause, expressiveness=args.expressiveness,
                                       rhythm=args.rhythm, prepare_text=not args.raw, normalize=not args.no_normalize,
                                       target_lufs=args.target_lufs)
@@ -116,7 +116,7 @@ def cmd_cache(args):
 
 
 def cmd_doctor(args):
-    checks = {"local_tts": __version__, "python": platform.python_version(), "platform": platform.platform(),
+    checks = {"loudness_tts": __version__, "python": platform.python_version(), "platform": platform.platform(),
               "cache_dir": str(cache_dir()), "ffmpeg": ffmpeg_path() or "not found (wav and pcm still work)"}
     try:
         import onnxruntime
@@ -129,7 +129,7 @@ def cmd_doctor(args):
         import onnx  # noqa: F401
         checks["word_timings"] = "exact (onnx installed)"
     except ImportError:
-        checks["word_timings"] = 'estimated (pip install "local-tts[timings]" for exact)'
+        checks["word_timings"] = 'estimated (pip install "loudness-tts[timings]" for exact)'
     checks["downloaded_voices"] = downloaded_models()
     if args.synthesize:
         started = time.monotonic()
@@ -150,8 +150,8 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument("--quiet", "-q", action="store_true")
     common.add_argument("--json", action="store_true", help="machine-readable output")
 
-    p = argparse.ArgumentParser(prog="local-tts", description="Natural text to speech on your own computer or server.")
-    p.add_argument("--version", action="version", version=f"local-tts {__version__}")
+    p = argparse.ArgumentParser(prog="loudness-tts", description="Natural text to speech on your own computer or server.")
+    p.add_argument("--version", action="version", version=f"loudness-tts {__version__}")
     sub = p.add_subparsers(dest="command")
 
     s = sub.add_parser("say", parents=[common], help="speak text into a file (default command)")
@@ -198,7 +198,7 @@ def build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--workers", type=int, default=1, help="syntheses at the same time")
     sv.add_argument("--cache-size", type=int, default=4, help="voices kept loaded")
     sv.add_argument("--max-characters", type=int, default=20000)
-    sv.add_argument("--api-key", help="require this bearer token (or set LOCAL_TTS_API_KEY)")
+    sv.add_argument("--api-key", help="require this bearer token (or set LOUDNESS_TTS_API_KEY)")
     sv.add_argument("--cors", help="allow this browser origin, e.g. http://localhost:3000 or *")
     sv.add_argument("--no-preload", action="store_true", help="load the default voice on first request")
     sv.set_defaults(func=cmd_serve)
@@ -228,11 +228,11 @@ def main(argv=None) -> int:
     try:
         args.func(args)
         return 0
-    except LocalTTSError as error:
+    except TTSError as error:
         if getattr(args, "json", False):
             print(json.dumps({"error": error.to_dict()}))
         else:
-            print(f"local-tts: {error.message}", file=sys.stderr)
+            print(f"loudness-tts: {error.message}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
         return 130

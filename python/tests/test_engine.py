@@ -1,5 +1,5 @@
-"""Synthesis tests with real voices. They run when the voices are in the cache (set LOCAL_TTS_HOME); in CI the
-workflow downloads them first with `local-tts download`."""
+"""Synthesis tests with real voices. They run when the voices are in the cache (set LOUDNESS_TTS_HOME); in CI the
+workflow downloads them first with `loudness-tts download`."""
 import json
 import threading
 import urllib.request
@@ -7,9 +7,9 @@ import urllib.request
 import numpy as np
 import pytest
 
-from local_tts import TTS, loudness
-from local_tts.downloader import downloaded_models
-from local_tts.errors import LocalTTSError
+from loudness_tts import TTS, loudness
+from loudness_tts.downloader import downloaded_models
+from loudness_tts.errors import TTSError
 
 EN = "en_US-clean100-medium"
 pytestmark = pytest.mark.skipif(EN not in downloaded_models(), reason=f"{EN} is not in the cache")
@@ -32,7 +32,7 @@ def test_speech_is_normalized_and_timed(tts):
     assert starts == sorted(starts)
     assert s.srt().startswith("1\n") and "WEBVTT" in s.vtt()
     import importlib.util
-    if importlib.util.find_spec("onnx"):  # pip install "local-tts[timings]": timings come from the model itself
+    if importlib.util.find_spec("onnx"):  # pip install "loudness-tts[timings]": timings come from the model itself
         assert s.metrics["timings"] == "exact"
 
 
@@ -50,20 +50,20 @@ def test_stream_matches_sentences(tts):
 
 
 def test_options_are_checked(tts):
-    with pytest.raises(LocalTTSError):
+    with pytest.raises(TTSError):
         tts.synthesize("Hello", speed=5)
-    with pytest.raises(LocalTTSError) as error:
+    with pytest.raises(TTSError) as error:
         tts.synthesize("x" * 10, timeout=1e-9)
     assert error.value.code == "TIMEOUT"
     stop = threading.Event()
     stop.set()
-    with pytest.raises(LocalTTSError) as error:
+    with pytest.raises(TTSError) as error:
         tts.synthesize("Hello there.", cancel=stop)
     assert error.value.code == "CANCELLED"
 
 
 def test_server_openai_compatible(tts):
-    from local_tts.server import SpeechServer
+    from loudness_tts.server import SpeechServer
 
     server = SpeechServer(("127.0.0.1", 0), tts, api_key="k")
     thread = threading.Thread(target=server.serve_forever, daemon=True)

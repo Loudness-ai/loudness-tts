@@ -3,9 +3,9 @@ chunk to an audio player or a network socket the same way)."""
 import time
 import wave
 
-import local_tts
+import loudness_tts
 
-tts = local_tts.TTS()
+tts = loudness_tts.TTS()
 tts.preload()
 started = time.monotonic()
 with wave.open("streamed.wav", "wb") as out:

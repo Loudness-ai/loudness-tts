@@ -1,8 +1,8 @@
-"""Builds the voice catalogue shipped with local-tts from the published voice study (Loudness.ai LA-RB-2026-003).
+"""Builds the voice catalogue shipped with loudness-tts from the published voice study (Loudness.ai LA-RB-2026-003).
 
   python3 scripts/build_catalog.py
 
-Writes python/src/local_tts/data/voices.json (and javascript/src/data/voices.json when that folder exists): every
+Writes python/src/loudness_tts/data/voices.json (and javascript/src/data/voices.json when that folder exists): every
 commercially usable Piper voice with its scores, licence, credit line and download files pinned to the tested revision,
 each file with its size and checksum. Nothing here says which voices the Loudness.ai website offers.
 """
@@ -61,7 +61,7 @@ out = {
     'voices': voices,
 }
 text = json.dumps(out, ensure_ascii=False, separators=(',', ':'))
-for target in (HERE / 'python/src/local_tts/data/voices.json', HERE / 'javascript/src/data/voices.json'):
+for target in (HERE / 'python/src/loudness_tts/data/voices.json', HERE / 'javascript/src/data/voices.json'):
     if target.parent.parent.exists() or target.parent.exists():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text)

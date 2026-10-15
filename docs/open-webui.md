@@ -1,9 +1,9 @@
 # Free local voices for Open WebUI (and other OpenAI-compatible apps)
 
-1. `pip install local-tts` and start the server: `local-tts serve --port 8880` (Docker: `docker run -p 8880:8880 -v local-tts:/data ghcr.io/loudness-ai/local-tts`).
+1. `pip install loudness-tts` and start the server: `loudness-tts serve --port 8880` (Docker: `docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts`).
 2. In Open WebUI: **Admin Panel → Settings → Audio → Text-to-Speech**: engine **OpenAI**, API base URL
    `http://127.0.0.1:8880/v1` (from another container: `http://host.docker.internal:8880/v1`), any API key (or the one you
-   set with `--api-key`), model `tts-1`, voice `nova` (or any id from `local-tts voices`).
+   set with `--api-key`), model `tts-1`, voice `nova` (or any id from `loudness-tts voices`).
 3. Save, and press the speaker icon under any answer.
 
 The same settings work in LibreChat, AnythingLLM, SillyTavern and any app that accepts an OpenAI-compatible

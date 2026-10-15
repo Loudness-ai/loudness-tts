@@ -3,7 +3,7 @@
 import { spawn } from "node:child_process";
 import { accessSync, constants } from "node:fs";
 import path from "node:path";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { pcm16, resample, wavBytes } from "./speech.js";
 
 export const CONTENT_TYPES: Record<string, string> = { wav: "audio/wav", pcm: "audio/pcm", mp3: "audio/mpeg",
@@ -38,19 +38,19 @@ export async function encode(samples: Float32Array, rate: number, format: string
   if (format === "wav") return wavBytes(samples, rate);
   if (format === "pcm") return pcm16(resample(samples, rate, PCM_RATE));
   if (!(format in FFMPEG_ARGS)) {
-    throw new LocalTTSError("FORMAT_UNAVAILABLE", `Unknown format "${format}": use wav, pcm, mp3, opus, aac or flac.`);
+    throw new TTSError("FORMAT_UNAVAILABLE", `Unknown format "${format}": use wav, pcm, mp3, opus, aac or flac.`);
   }
   const ffmpeg = ffmpegPath();
-  if (!ffmpeg) throw new LocalTTSError("FORMAT_UNAVAILABLE", `${format} needs FFmpeg on the PATH; use wav or pcm, or install FFmpeg.`);
+  if (!ffmpeg) throw new TTSError("FORMAT_UNAVAILABLE", `${format} needs FFmpeg on the PATH; use wav or pcm, or install FFmpeg.`);
   return new Promise((resolve, reject) => {
     const child = spawn(ffmpeg, ["-hide_banner", "-loglevel", "error", "-f", "s16le", "-ar", String(rate), "-ac", "1",
       "-i", "pipe:0", ...FFMPEG_ARGS[format], "pipe:1"], { stdio: ["pipe", "pipe", "ignore"] });
     const out: Buffer[] = [];
     child.stdout.on("data", (b: Buffer) => out.push(b));
-    child.on("error", () => reject(new LocalTTSError("FORMAT_UNAVAILABLE", `FFmpeg could not encode ${format}.`)));
+    child.on("error", () => reject(new TTSError("FORMAT_UNAVAILABLE", `FFmpeg could not encode ${format}.`)));
     child.on("close", (code) => {
       const data = Buffer.concat(out);
-      if (code !== 0 || !data.length) reject(new LocalTTSError("FORMAT_UNAVAILABLE", `FFmpeg could not encode ${format}.`));
+      if (code !== 0 || !data.length) reject(new TTSError("FORMAT_UNAVAILABLE", `FFmpeg could not encode ${format}.`));
       else resolve(new Uint8Array(data));
     });
     child.stdin.on("error", () => undefined);

@@ -39,9 +39,9 @@ jobs:
           file: docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/loudness-ai/local-tts:${{ github.ref_name }},ghcr.io/loudness-ai/local-tts:latest
+          tags: ghcr.io/loudness-ai/loudness-tts:${{ github.ref_name }},ghcr.io/loudness-ai/loudness-tts:latest
           labels: |
-            org.opencontainers.image.source=https://github.com/Loudness-ai/local-tts
+            org.opencontainers.image.source=https://github.com/Loudness-ai/loudness-tts
             org.opencontainers.image.description=Natural text to speech on your own server, OpenAI-compatible
             org.opencontainers.image.licenses=GPL-3.0-or-later
   npm:

@@ -3,7 +3,7 @@
 // voice study (LA-RB-2026-003, https://loudness.ai/research/piper-tts-voices-ranked/). Compare scores within one
 // language only.
 import data from "./voices-data.js";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import type { FileSpec } from "./platform.js";
 
 export type LicenceUse = "none" | "credit" | "copyleft" | "unclear";
@@ -104,7 +104,7 @@ function everyVoice(): Voice[] {
 /** Download files, checksums, licence and card of one model file. */
 export function modelInfo(model: string): ModelInfo {
   const info = catalog.models[model];
-  if (!info) throw new LocalTTSError("VOICE_NOT_FOUND", `No voice model called "${model}" is in the catalogue.`);
+  if (!info) throw new TTSError("VOICE_NOT_FOUND", `No voice model called "${model}" is in the catalogue.`);
   return info;
 }
 
@@ -147,7 +147,7 @@ export function voices(filter: VoiceFilter | string = {}): Voice[] {
   if (sort === "name") out.sort((a, b) => compare(a.name.toLowerCase(), b.name.toLowerCase()));
   else if (sort === "overall" || sort === "natural" || sort === "clear") {
     out.sort((a, b) => b[sort] - a[sort] || compare(a.id, b.id));
-  } else throw new LocalTTSError("OPTION_INVALID", "sort must be overall, natural, clear or name.");
+  } else throw new TTSError("OPTION_INVALID", "sort must be overall, natural, clear or name.");
   return out;
 }
 
@@ -206,15 +206,15 @@ export function findVoice(voice: string | null = "auto", language: string | null
   if (speakers.length) return speakers.reduce((a, b) => (b.rank < a.rank || (b.rank === a.rank && b.id < a.id) ? b : a));
   const mapped = openaiVoiceMap(browser)[voice.toLowerCase()];
   if (mapped) return every.find((v) => v.id === mapped)!;
-  throw new LocalTTSError("VOICE_NOT_FOUND", `No voice called "${voice}". Run \`local-tts voices\` to see them.`);
+  throw new TTSError("VOICE_NOT_FOUND", `No voice called "${voice}". Run \`loudness-tts voices\` to see them.`);
 }
 
 function best(language: string, browser: boolean): Voice {
   let pool = voices({ language, use: AUTO_USE, browser }).concat(voices({ language, browser }));
   if (browser) pool = smallFirst(pool);
   if (!pool.length) {
-    throw new LocalTTSError("VOICE_NOT_FOUND", `No voice for "${language}"${browser ? " that a web page can download" : ""}. `
-      + "Run `local-tts languages` to see the list.");
+    throw new TTSError("VOICE_NOT_FOUND", `No voice for "${language}"${browser ? " that a web page can download" : ""}. `
+      + "Run `loudness-tts languages` to see the list.");
   }
   return pool[0];
 }

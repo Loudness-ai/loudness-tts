@@ -2,7 +2,7 @@
 """Voice files: downloaded once from their original source, checked against the catalogue's size and checksum,
 then used offline. Nothing is sent anywhere except the file requests themselves.
 
-Cache folder: $LOCAL_TTS_HOME, else $XDG_CACHE_HOME/local-tts, else ~/.cache/local-tts (Windows: %LOCALAPPDATA%).
+Cache folder: $LOUDNESS_TTS_HOME, else $XDG_CACHE_HOME/loudness-tts, else ~/.cache/loudness-tts (Windows: %LOCALAPPDATA%).
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from typing import Callable, Optional
 
 from ._version import __version__
 from .catalog import model_info
-from .errors import LocalTTSError
+from .errors import TTSError
 
 CHUNK = 1 << 20
 
@@ -26,12 +26,12 @@ CHUNK = 1 << 20
 def cache_dir(override=None) -> Path:
     if override:
         return Path(override).expanduser()
-    if os.environ.get("LOCAL_TTS_HOME"):
-        return Path(os.environ["LOCAL_TTS_HOME"]).expanduser()
+    if os.environ.get("LOUDNESS_TTS_HOME"):
+        return Path(os.environ["LOUDNESS_TTS_HOME"]).expanduser()
     if sys.platform == "win32" and os.environ.get("LOCALAPPDATA"):
-        return Path(os.environ["LOCALAPPDATA"]) / "local-tts"
+        return Path(os.environ["LOCALAPPDATA"]) / "loudness-tts"
     base = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
-    return Path(base) / "local-tts"
+    return Path(base) / "loudness-tts"
 
 
 def model_paths(model: str, root=None) -> tuple:
@@ -62,7 +62,7 @@ def _fetch(url: str, target: Path, spec: dict, label: str, progress: Optional[Ca
         try:
             h = hashlib.new(algo)
             done = 0
-            request = urllib.request.Request(url, headers={"User-Agent": f"local-tts/{__version__}"})
+            request = urllib.request.Request(url, headers={"User-Agent": f"loudness-tts/{__version__}"})
             with urllib.request.urlopen(request, timeout=timeout) as response, out:
                 while True:
                     block = response.read(CHUNK)
@@ -72,15 +72,15 @@ def _fetch(url: str, target: Path, spec: dict, label: str, progress: Optional[Ca
                     h.update(block)
                     done += len(block)
                     if done > spec["size"]:
-                        raise LocalTTSError("CHECKSUM_MISMATCH", f"{label} is larger than expected; download refused.")
+                        raise TTSError("CHECKSUM_MISMATCH", f"{label} is larger than expected; download refused.")
                     if progress:
                         progress({"file": label, "bytes": done, "total": spec["size"]})
             if done != spec["size"] or h.hexdigest() != want:
-                raise LocalTTSError("CHECKSUM_MISMATCH", f"{label} does not match its published checksum; it was not used.")
+                raise TTSError("CHECKSUM_MISMATCH", f"{label} does not match its published checksum; it was not used.")
             os.replace(tmp, target)
             target.with_name(target.name + ".ok").write_text(f"{algo}:{want}")
             return
-        except LocalTTSError:
+        except TTSError:
             raise
         except (urllib.error.URLError, OSError, TimeoutError) as error:
             last_error = error
@@ -89,7 +89,7 @@ def _fetch(url: str, target: Path, spec: dict, label: str, progress: Optional[Ca
             out.close()
             if os.path.exists(tmp):
                 os.unlink(tmp)
-    raise LocalTTSError("DOWNLOAD_FAILED", f"Could not download {label}: {last_error}")
+    raise TTSError("DOWNLOAD_FAILED", f"Could not download {label}: {last_error}")
 
 
 def ensure_model(model: str, *, root=None, offline: bool = False, progress: Optional[Callable] = None,
@@ -101,8 +101,8 @@ def ensure_model(model: str, *, root=None, offline: bool = False, progress: Opti
         spec = info["files"][key]
         if _verified(path, spec):
             continue
-        if offline or os.environ.get("LOCAL_TTS_OFFLINE") == "1":
-            raise LocalTTSError("OFFLINE", f"{model} is not downloaded yet and downloads are turned off.")
+        if offline or os.environ.get("LOUDNESS_TTS_OFFLINE") == "1":
+            raise TTSError("OFFLINE", f"{model} is not downloaded yet and downloads are turned off.")
         _fetch(spec["url"], path, spec, path.name, progress, timeout)
     return onnx_path, config_path
 
@@ -115,7 +115,7 @@ def downloaded_models(root=None) -> list:
         for sub in sorted(folder.iterdir()):
             try:
                 info = model_info(sub.name)
-            except LocalTTSError:
+            except TTSError:
                 continue
             onnx_path, config_path = model_paths(sub.name, root)
             if _verified(onnx_path, info["files"]["model"]) and _verified(config_path, info["files"]["config"]):

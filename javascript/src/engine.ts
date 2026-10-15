@@ -5,7 +5,7 @@
 import type * as Ort from "onnxruntime-web";
 import { withAlignmentOutput } from "./alignment.js";
 import { findVoice, modelInfo, type Voice } from "./catalog.js";
-import { CancelledError, LocalTTSError } from "./errors.js";
+import { CancelledError, TTSError } from "./errors.js";
 import { phonemizeForVoice } from "./espeak.js";
 import * as loudness from "./loudness.js";
 import { onnxWasmUrl, platform, type Progress } from "./platform.js";
@@ -71,7 +71,7 @@ export interface TTSOptions {
   cacheSize?: number;
   /** Never download; use voices already stored. */
   offline?: boolean;
-  /** Where voices are kept in Node (default: $LOCAL_TTS_HOME, else the user cache folder, shared with the Python
+  /** Where voices are kept in Node (default: $LOUDNESS_TTS_HOME, else the user cache folder, shared with the Python
    * edition). */
   cacheDir?: string;
   /** Exact word timings from the model (default true). */
@@ -106,20 +106,20 @@ export interface SpeakOptions {
 function bounded(value: unknown, fallback: number, low: number, high: number, label: string): number {
   if (value === undefined || value === null) return fallback;
   const n = typeof value === "number" ? value : typeof value === "string" && value.trim() ? Number(value) : NaN;
-  if (Number.isNaN(n)) throw new LocalTTSError("OPTION_INVALID", `${label} is not a number.`);
-  if (!(n >= low && n <= high)) throw new LocalTTSError("OPTION_INVALID", `${label} must be between ${low} and ${high}.`);
+  if (Number.isNaN(n)) throw new TTSError("OPTION_INVALID", `${label} is not a number.`);
+  if (!(n >= low && n <= high)) throw new TTSError("OPTION_INVALID", `${label} must be between ${low} and ${high}.`);
   return n;
 }
 
 const CONTROL = /^[\p{C}]$/u;
 /** Normalizes text the way the engine reads it: NFC, no control characters, single spaces. */
 export function cleanText(value: unknown, maxCharacters: number): string {
-  if (typeof value !== "string") throw new LocalTTSError("TEXT_INVALID", "Text must be a string.");
+  if (typeof value !== "string") throw new TTSError("TEXT_INVALID", "Text must be a string.");
   let text = Array.from(value.normalize("NFC")).filter((ch) => ch === "\n" || ch === "\t" || !CONTROL.test(ch)).join("");
   text = strip(text.replace(/[ \t]+/g, " "));
-  if (!text) throw new LocalTTSError("TEXT_INVALID", "There is no text to speak.");
+  if (!text) throw new TTSError("TEXT_INVALID", "There is no text to speak.");
   if (cpLength(text) > maxCharacters) {
-    throw new LocalTTSError("TEXT_TOO_LONG", `Text is longer than ${maxCharacters} characters; raise maxCharacters or split it.`);
+    throw new TTSError("TEXT_TOO_LONG", `Text is longer than ${maxCharacters} characters; raise maxCharacters or split it.`);
   }
   return text;
 }
@@ -159,7 +159,7 @@ function breathe(): Promise<void> {
 function stopIfAborted(signal?: AbortSignal): void {
   if (!signal?.aborted) return;
   throw signal.reason instanceof Error && signal.reason.name === "TimeoutError"
-    ? new LocalTTSError("TIMEOUT", "Speech generation took longer than the time limit.") : new CancelledError();
+    ? new TTSError("TIMEOUT", "Speech generation took longer than the time limit.") : new CancelledError();
 }
 
 const pauseAfter = (kind: string, pause: number): number =>
@@ -290,7 +290,7 @@ export class TTS {
     try {
       session = await ort.InferenceSession.create(patched ?? model, { executionProviders: ["wasm"], graphOptimizationLevel: "all" });
     } catch (error) {
-      throw new LocalTTSError("ENGINE_FAILED", `The voice model could not be loaded: ${String(error)}`);
+      throw new TTSError("ENGINE_FAILED", `The voice model could not be loaded: ${String(error)}`);
     }
     const aligned = patched !== null && session.outputNames.length > 1;
     const clusters = config.vowel_clusters?.length ? new Set(config.vowel_clusters.map((c) => c.join("\0"))) : undefined;
@@ -371,7 +371,7 @@ export class TTS {
   private options(o: SpeakOptions): [number, number, number, number] {
     let pause: number;
     if (typeof o.pause === "string") {
-      if (!(o.pause in PAUSES)) throw new LocalTTSError("OPTION_INVALID", "pause must be short, normal, long or a number of seconds.");
+      if (!(o.pause in PAUSES)) throw new TTSError("OPTION_INVALID", "pause must be short, normal, long or a number of seconds.");
       pause = PAUSES[o.pause];
     } else {
       pause = bounded(o.pause, 0.35, 0.0, 3.0, "pause");
@@ -452,12 +452,12 @@ export class TTS {
         loaded = item[1];
       }
     }
-    if (!timed.length || !loaded) throw new LocalTTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.");
+    if (!timed.length || !loaded) throw new TTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.");
     const rate = loaded.sampleRate;
     let audio = concat(parts);
     let peak = 0;
     for (const s of audio) peak = Math.max(peak, Math.abs(s));
-    if (peak < 1e-6) throw new LocalTTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.");
+    if (peak < 1e-6) throw new TTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.");
     const scale = Math.fround(0.9);
     audio = audio.map((s) => Math.max(-1, Math.min(1, Math.fround(Math.fround(s / peak) * scale))));
     let report = { normalized: false, limited: false };
@@ -633,15 +633,15 @@ export function phonemesToIds(phonemes: string[], idMap: Record<string, number[]
 async function readLocal(path: string): Promise<Uint8Array> {
   if (/^https?:\/\//.test(path)) {
     const response = await fetch(path);
-    if (!response.ok) throw new LocalTTSError("VOICE_NOT_FOUND", `Could not load ${path} (HTTP ${response.status}).`);
+    if (!response.ok) throw new TTSError("VOICE_NOT_FOUND", `Could not load ${path} (HTTP ${response.status}).`);
     return new Uint8Array(await response.arrayBuffer());
   }
   const read = platform().readFile;
-  if (!read) throw new LocalTTSError("NOT_AVAILABLE_HERE", "Local model paths need Node, Bun or Deno; in a browser give a URL.");
+  if (!read) throw new TTSError("NOT_AVAILABLE_HERE", "Local model paths need Node, Bun or Deno; in a browser give a URL.");
   try {
     return await read(path);
   } catch {
-    throw new LocalTTSError("VOICE_NOT_FOUND", `No model file at ${path}.`);
+    throw new TTSError("VOICE_NOT_FOUND", `No model file at ${path}.`);
   }
 }
 

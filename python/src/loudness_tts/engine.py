@@ -21,7 +21,7 @@ import numpy as np
 from . import loudness, textprep
 from .catalog import Voice, find_voice
 from .downloader import cache_dir, ensure_model
-from .errors import CancelledError, LocalTTSError
+from .errors import CancelledError, TTSError
 from .speech import Speech, SpeechChunk
 
 PAUSES = {"short": 0.12, "normal": 0.35, "long": 0.7}
@@ -44,7 +44,7 @@ def _espeak_dir() -> Optional[Path]:
     source = Path(ESPEAK_DATA_DIR)
     if len(str(source)) <= 100:
         return None
-    link_dir = Path(tempfile.gettempdir()) / "local-tts-espeak"
+    link_dir = Path(tempfile.gettempdir()) / "loudness-tts-espeak"
     link = link_dir / "espeak-ng-data"
     try:
         link_dir.mkdir(exist_ok=True)
@@ -70,22 +70,22 @@ def _bounded(value, default: float, low: float, high: float, label: str) -> floa
     try:
         number = float(value)
     except (TypeError, ValueError):
-        raise LocalTTSError("OPTION_INVALID", f"{label} is not a number.") from None
+        raise TTSError("OPTION_INVALID", f"{label} is not a number.") from None
     if not low <= number <= high:
-        raise LocalTTSError("OPTION_INVALID", f"{label} must be between {low} and {high}.")
+        raise TTSError("OPTION_INVALID", f"{label} must be between {low} and {high}.")
     return number
 
 
 def clean_text(value, max_characters: int) -> str:
     if not isinstance(value, str):
-        raise LocalTTSError("TEXT_INVALID", "Text must be a string.")
+        raise TTSError("TEXT_INVALID", "Text must be a string.")
     text = unicodedata.normalize("NFC", value)
     text = "".join(ch for ch in text if ch in "\n\t" or unicodedata.category(ch)[0] != "C")
     text = re.sub(r"[ \t]+", " ", text).strip()
     if not text:
-        raise LocalTTSError("TEXT_INVALID", "There is no text to speak.")
+        raise TTSError("TEXT_INVALID", "There is no text to speak.")
     if len(text) > max_characters:
-        raise LocalTTSError("TEXT_TOO_LONG", f"Text is longer than {max_characters} characters; raise max_characters or split it.")
+        raise TTSError("TEXT_TOO_LONG", f"Text is longer than {max_characters} characters; raise max_characters or split it.")
     return text
 
 
@@ -163,7 +163,7 @@ class TTS:
     @staticmethod
     def _custom_voice(path: Path, locale: str) -> Voice:
         if not path.is_file():
-            raise LocalTTSError("VOICE_NOT_FOUND", f"No model file at {path}.")
+            raise TTSError("VOICE_NOT_FOUND", f"No model file at {path}.")
         cfg = json.loads(Path(f"{path}.json").read_text(encoding="utf-8"))
         return Voice(id=str(path), model=str(path), speaker=None, name=path.stem, language=locale, locale=locale,
                      quality=cfg.get("audio", {}).get("quality") or "unknown", sex=None, overall=0, natural=0, clear=0,
@@ -213,11 +213,11 @@ class TTS:
         if self.timings is False:
             return onnx_path, False
         try:
-            import onnx  # optional: pip install "local-tts[timings]"
+            import onnx  # optional: pip install "loudness-tts[timings]"
             from piper.patch_voice_with_alignment import add_alignment_output
         except ImportError:
             if self.timings is True:
-                raise LocalTTSError("OPTION_INVALID", 'Exact word timings need the onnx package: pip install "local-tts[timings]".')
+                raise TTSError("OPTION_INVALID", 'Exact word timings need the onnx package: pip install "loudness-tts[timings]".')
             return onnx_path, False
         stat = onnx_path.stat()
         target = cache_dir(self.root) / "aligned" / f"{onnx_path.stem}-{stat.st_size}.onnx"
@@ -243,7 +243,7 @@ class TTS:
     def _options(self, speed, pause, expressiveness, rhythm):
         if isinstance(pause, str):
             if pause not in PAUSES:
-                raise LocalTTSError("OPTION_INVALID", "pause must be short, normal, long or a number of seconds.")
+                raise TTSError("OPTION_INVALID", "pause must be short, normal, long or a number of seconds.")
             pause_s = PAUSES[pause]
         else:
             pause_s = _bounded(pause, 0.35, 0.0, 3.0, "pause")
@@ -309,7 +309,7 @@ class TTS:
             if cancel is not None and (cancel() if callable(cancel) else cancel.is_set()):
                 raise CancelledError()
             if deadline is not None and time.monotonic() > deadline:
-                raise LocalTTSError("TIMEOUT", "Speech generation took longer than the timeout.")
+                raise TTSError("TIMEOUT", "Speech generation took longer than the timeout.")
             chunks = list(self._sentences(loaded, segment.text, syn))
             heard, stream, aligned = [], [], True
             for index, (chunk, sounds) in enumerate(chunks):
@@ -356,12 +356,12 @@ class TTS:
                 timed.append(payload[:4])
                 loaded = payload[4]
         if not timed:
-            raise LocalTTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.")
+            raise TTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.")
         rate = loaded.sample_rate
         audio = np.concatenate(parts)
         peak = float(np.max(np.abs(audio)))
         if peak < 1e-6:
-            raise LocalTTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.")
+            raise TTSError("NOTHING_TO_SPEAK", "There is nothing to speak in this text.")
         audio = np.clip(audio / peak * 0.9, -1.0, 1.0).astype(np.float32)
         report = {"normalized": False, "limited": False}
         if normalize:

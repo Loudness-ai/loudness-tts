@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Results: the spoken audio with its timings, WAV/PCM export and SRT/VTT subtitles (the same rules as loudness.ai).
 import type { Voice } from "./catalog.js";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { platform } from "./platform.js";
 
 /** Text offsets are UTF-16 code units (text.slice(start, end)); times are milliseconds. */
@@ -25,7 +25,7 @@ export function pcm16(samples: Float32Array): Uint8Array {
 }
 
 export function wavBytes(samples: Float32Array, rate: number, bitDepth: 16 | 24 = 16): Uint8Array {
-  if (bitDepth !== 16 && bitDepth !== 24) throw new LocalTTSError("OPTION_INVALID", "bitDepth must be 16 or 24.");
+  if (bitDepth !== 16 && bitDepth !== 24) throw new TTSError("OPTION_INVALID", "bitDepth must be 16 or 24.");
   const width = bitDepth / 8;
   const size = samples.length * width;
   const out = new Uint8Array(44 + size);
@@ -158,7 +158,7 @@ export const vtt = (timings: Timings): string => "WEBVTT\n\n" + subtitleCues(tim
 async function write(path: string, data: Uint8Array | string): Promise<string> {
   const writeFile = platform().writeFile;
   if (!writeFile) {
-    throw new LocalTTSError("NOT_AVAILABLE_HERE", "Saving to a path needs Node, Bun or Deno; in a browser use wav() or blob().");
+    throw new TTSError("NOT_AVAILABLE_HERE", "Saving to a path needs Node, Bun or Deno; in a browser use wav() or blob().");
   }
   await writeFile(path, data);
   return path;

@@ -1,8 +1,8 @@
-// Synthesis with real voices. Runs when en_US-clean100-medium is in the voice cache (LOCAL_TTS_HOME); CI downloads it
-// first with `local-tts download`.
+// Synthesis with real voices. Runs when en_US-clean100-medium is in the voice cache (LOUDNESS_TTS_HOME); CI downloads it
+// first with `loudness-tts download`.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { TTS, downloadedModels, loudness, LocalTTSError } from "../dist/node.js";
+import { TTS, downloadedModels, loudness, TTSError } from "../dist/node.js";
 
 const EN = "en_US-clean100-medium";
 const ready = (await downloadedModels()).includes(EN);
@@ -41,7 +41,7 @@ test("streaming yields sentences in order", { skip: !ready }, async () => {
 });
 
 test("options are checked and work can be stopped", { skip: !ready }, async () => {
-  await assert.rejects(tts.synthesize("Hello", { speed: 5 }), (e) => e instanceof LocalTTSError && e.code === "OPTION_INVALID");
+  await assert.rejects(tts.synthesize("Hello", { speed: 5 }), (e) => e instanceof TTSError && e.code === "OPTION_INVALID");
   const stop = new AbortController();
   stop.abort();
   await assert.rejects(tts.synthesize("Hello there.", { signal: stop.signal }), (e) => e.code === "CANCELLED");

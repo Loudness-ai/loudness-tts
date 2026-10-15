@@ -10,7 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import {
-  AUTO_USE, LocalTTSError, NodeStore, findVoice, languages, loudness, openaiVoiceMap, resample, srt, voices, vtt, wavBytes,
+  AUTO_USE, TTSError, NodeStore, findVoice, languages, loudness, openaiVoiceMap, resample, srt, voices, vtt, wavBytes,
 } from "../dist/node.js";
 import { Md5 } from "../dist/md5.js";
 import { withAlignmentOutput } from "../dist/alignment.js";
@@ -42,7 +42,7 @@ test("voices by id, model and OpenAI name; filters and credit", () => {
   assert.equal(findVoice("nova").sex, "F");
   assert.equal(findVoice("onyx").sex, "M");
   for (const name of ["alloy", "echo", "fable", "onyx", "nova", "shimmer"]) assert.ok(name in openaiVoiceMap());
-  assert.throws(() => findVoice("no-such-voice"), (e) => e instanceof LocalTTSError && e.code === "VOICE_NOT_FOUND");
+  assert.throws(() => findVoice("no-such-voice"), (e) => e instanceof TTSError && e.code === "VOICE_NOT_FOUND");
   const f = voices({ language: "en-US", sex: "female", minScore: 95 });
   assert.ok(f.length && f.every((v) => v.sex === "F" && v.overall >= 95));
   assert.ok(findVoice("en_IE-jenny-medium").credit.includes("Jenny"));
@@ -130,5 +130,5 @@ test("command line", async () => {
   const failed = await run("say", "hello", "--voice", "nope", "-o", "x.wav", "--json");
   assert.equal(failed.code, 1);
   assert.equal(JSON.parse(failed.stdout).error.code, "VOICE_NOT_FOUND");
-  assert.match((await run("--version")).stdout, /^local-tts \d/);
+  assert.match((await run("--version")).stdout, /^loudness-tts \d/);
 });

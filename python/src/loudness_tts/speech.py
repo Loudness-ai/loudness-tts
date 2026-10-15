@@ -126,7 +126,7 @@ class Speech:
         return pcm16(resample(self.samples, self.sample_rate, sample_rate or self.sample_rate))
 
     def save(self, path: Union[str, Path], bit_depth: int = 16) -> Path:
-        """Write a WAV file. For MP3/Opus/FLAC, convert the WAV with any encoder (see ``local-tts --format``)."""
+        """Write a WAV file. For MP3/Opus/FLAC, convert the WAV with any encoder (see ``loudness-tts --format``)."""
         path = Path(path)
         path.write_bytes(self.wav(bit_depth))
         return path

@@ -3,7 +3,7 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "local-tts"
+name = "loudness-tts"
 dynamic = ["version"]
 description = "Fast, natural text to speech on your own computer or server: 1,683 ranked Piper voices, smart text reading, subtitles, loudness normalization and an OpenAI-compatible server. No API key."
 readme = "README.md"
@@ -13,7 +13,7 @@ authors = [{ name = "Asad Shehzad", email = "asad@loudness.ai" }]
 maintainers = [{ name = "Loudness.ai", email = "asad@loudness.ai" }]
 requires-python = ">=3.9"
 dependencies = ["piper-tts>=1.8,<2", "numpy>=1.22"]
-keywords = ["tts", "text-to-speech", "piper", "piper-tts", "offline-tts", "local-tts", "speech-synthesis", "openai-compatible", "subtitles", "srt", "vtt", "lufs", "voice"]
+keywords = ["tts", "text-to-speech", "piper", "piper-tts", "offline-tts", "local-tts", "loudness-tts", "speech-synthesis", "openai-compatible", "subtitles", "srt", "vtt", "lufs", "voice"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -31,20 +31,20 @@ dev = ["pytest>=7", "build", "twine"]
 
 [project.urls]
 Homepage = "https://loudness.ai/developers/"
-Source = "https://github.com/Loudness-ai/local-tts"
-Issues = "https://github.com/Loudness-ai/local-tts/issues"
-Documentation = "https://github.com/Loudness-ai/local-tts#readme"
+Source = "https://github.com/Loudness-ai/loudness-tts"
+Issues = "https://github.com/Loudness-ai/loudness-tts/issues"
+Documentation = "https://github.com/Loudness-ai/loudness-tts#readme"
 "Voice ranking" = "https://loudness.ai/research/piper-tts-voices-ranked/"
 "Online Text to Speech" = "https://loudness.ai/tools/text-to-speech/"
 
 [project.scripts]
-local-tts = "local_tts.cli:main"
+loudness-tts = "loudness_tts.cli:main"
 
 [tool.setuptools.dynamic]
-version = { attr = "local_tts._version.__version__" }
+version = { attr = "loudness_tts._version.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-local_tts = ["data/*.json", "py.typed"]
+loudness_tts = ["data/*.json", "py.typed"]

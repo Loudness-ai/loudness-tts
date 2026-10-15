@@ -7,7 +7,7 @@ import subprocess
 
 import numpy as np
 
-from .errors import LocalTTSError
+from .errors import TTSError
 from .speech import pcm16, resample, wav_bytes
 
 CONTENT_TYPES = {"wav": "audio/wav", "pcm": "audio/pcm", "mp3": "audio/mpeg", "opus": "audio/ogg", "aac": "audio/aac",
@@ -29,13 +29,13 @@ def encode(samples: np.ndarray, rate: int, fmt: str) -> bytes:
     if fmt == "pcm":
         return pcm16(resample(samples, rate, PCM_RATE))
     if fmt not in _FFMPEG_ARGS:
-        raise LocalTTSError("FORMAT_UNAVAILABLE", f"Unknown format {fmt!r}: use wav, pcm, mp3, opus, aac or flac.")
+        raise TTSError("FORMAT_UNAVAILABLE", f"Unknown format {fmt!r}: use wav, pcm, mp3, opus, aac or flac.")
     ffmpeg = ffmpeg_path()
     if not ffmpeg:
-        raise LocalTTSError("FORMAT_UNAVAILABLE", f"{fmt} needs FFmpeg on the PATH; use wav or pcm, or install FFmpeg.")
+        raise TTSError("FORMAT_UNAVAILABLE", f"{fmt} needs FFmpeg on the PATH; use wav or pcm, or install FFmpeg.")
     run = subprocess.run([ffmpeg, "-hide_banner", "-loglevel", "error", "-f", "s16le", "-ar", str(rate), "-ac", "1",
                           "-i", "pipe:0", *_FFMPEG_ARGS[fmt], "pipe:1"], input=pcm16(samples), capture_output=True,
                          timeout=300)
     if run.returncode != 0 or not run.stdout:
-        raise LocalTTSError("FORMAT_UNAVAILABLE", f"FFmpeg could not encode {fmt}.")
+        raise TTSError("FORMAT_UNAVAILABLE", f"FFmpeg could not encode {fmt}.")
     return run.stdout

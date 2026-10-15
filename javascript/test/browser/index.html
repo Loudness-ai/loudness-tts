@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>local-tts browser test</title>
+<title>loudness-tts browser test</title>
 <script type="importmap">{"imports": {"#ort": "/node_modules/onnxruntime-web/dist/ort.wasm.bundle.min.mjs"}}</script>
 <style>body{font:16px system-ui;margin:24px;max-width:720px}pre{white-space:pre-wrap;background:#f4f4f4;padding:12px}</style>
 </head>
 <body>
-<h1>local-tts in the browser</h1>
+<h1>loudness-tts in the browser</h1>
 <p id="status">Loading…</p>
 <audio id="player" controls></audio>
 <pre id="out"></pre>
@@ -21,7 +21,7 @@ configure(new URLSearchParams(location.search).has("cdn") ? { espeakDataUrl: "/e
   : { espeakDataUrl: "/espeak-ng-data/", onnxWasmUrl: "/node_modules/onnxruntime-web/dist/" });
 try {
   const voice = findVoice("auto", "en-US", true);
-  status.textContent = `local-tts ${version}: loading ${voice.id}… (isolated: ${crossOriginIsolated})`;
+  status.textContent = `loudness-tts ${version}: loading ${voice.id}… (isolated: ${crossOriginIsolated})`;
   const t0 = performance.now();
   const first = await synthesize("Dr. Smith paid $5.50 on 4/5/2026. Call +1 555-123-4567, please.", {
     voice: voice.id });

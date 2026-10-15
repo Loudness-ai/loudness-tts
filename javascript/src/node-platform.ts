@@ -9,18 +9,18 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { allModels } from "./catalog.js";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { setPlatform, type FetchOptions, type FileSpec, type VoiceStore } from "./platform.js";
 import { VERSION } from "./version.js";
 
 
-/** $LOCAL_TTS_HOME, else $XDG_CACHE_HOME/local-tts, else ~/.cache/local-tts (Windows: %LOCALAPPDATA%\local-tts). */
+/** $LOUDNESS_TTS_HOME, else $XDG_CACHE_HOME/loudness-tts, else ~/.cache/loudness-tts (Windows: %LOCALAPPDATA%\loudness-tts). */
 export function cacheDir(override?: string): string {
   if (override) return override.replace(/^~(?=$|[\\/])/, os.homedir());
   const env = process.env;
-  if (env.LOCAL_TTS_HOME) return env.LOCAL_TTS_HOME.replace(/^~(?=$|[\\/])/, os.homedir());
-  if (process.platform === "win32" && env.LOCALAPPDATA) return path.join(env.LOCALAPPDATA, "local-tts");
-  return path.join(env.XDG_CACHE_HOME || path.join(os.homedir(), ".cache"), "local-tts");
+  if (env.LOUDNESS_TTS_HOME) return env.LOUDNESS_TTS_HOME.replace(/^~(?=$|[\\/])/, os.homedir());
+  if (process.platform === "win32" && env.LOCALAPPDATA) return path.join(env.LOCALAPPDATA, "loudness-tts");
+  return path.join(env.XDG_CACHE_HOME || path.join(os.homedir(), ".cache"), "loudness-tts");
 }
 
 const digest = (spec: FileSpec): [string, string] => (spec.sha256 ? ["sha256", spec.sha256] : ["md5", spec.md5 ?? ""]);
@@ -42,7 +42,7 @@ async function fetchTo(spec: FileSpec, target: string, label: string, options: F
   for (let attempt = 0; attempt < 3; attempt++) {
     const tmp = path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${attempt}.tmp`);
     try {
-      const response = await fetch(spec.url, { headers: { "User-Agent": `local-tts/${VERSION}` }, signal: options.signal });
+      const response = await fetch(spec.url, { headers: { "User-Agent": `loudness-tts/${VERSION}` }, signal: options.signal });
       if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
       const hash = createHash(algo);
       const out = createWriteStream(tmp);
@@ -50,7 +50,7 @@ async function fetchTo(spec: FileSpec, target: string, label: string, options: F
       try {
         for await (const block of Readable.fromWeb(response.body as never) as AsyncIterable<Buffer>) {
           done += block.length;
-          if (done > spec.size) throw new LocalTTSError("CHECKSUM_MISMATCH", `${label} is larger than expected; download refused.`);
+          if (done > spec.size) throw new TTSError("CHECKSUM_MISMATCH", `${label} is larger than expected; download refused.`);
           hash.update(block);
           if (!out.write(block)) await new Promise<void>((resolve) => out.once("drain", () => resolve()));
           options.progress?.({ file: label, bytes: done, total: spec.size });
@@ -59,20 +59,20 @@ async function fetchTo(spec: FileSpec, target: string, label: string, options: F
         await new Promise<void>((resolve) => out.end(() => resolve()));
       }
       if (done !== spec.size || hash.digest("hex") !== want) {
-        throw new LocalTTSError("CHECKSUM_MISMATCH", `${label} does not match its published checksum; it was not used.`);
+        throw new TTSError("CHECKSUM_MISMATCH", `${label} does not match its published checksum; it was not used.`);
       }
       await rename(tmp, target);
       await writeFile(target + ".ok", `${algo}:${want}`);
       return;
     } catch (error) {
-      if (error instanceof LocalTTSError || options.signal?.aborted) throw error;
+      if (error instanceof TTSError || options.signal?.aborted) throw error;
       lastError = error;
       await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
     } finally {
       await unlink(tmp).catch(() => undefined);
     }
   }
-  throw new LocalTTSError("DOWNLOAD_FAILED", `Could not download ${label}: ${String(lastError)}`);
+  throw new TTSError("DOWNLOAD_FAILED", `Could not download ${label}: ${String(lastError)}`);
 }
 
 /** Voice files in the cache folder, in the same layout as the Python edition (so both share downloads). */
@@ -80,8 +80,8 @@ export class NodeStore implements VoiceStore {
   async file(model: string, name: string, spec: FileSpec, options: FetchOptions): Promise<Uint8Array> {
     const file = path.join(cacheDir(options.root), "voices", model, name);
     if (!(await verified(file, spec))) {
-      if (options.offline || process.env.LOCAL_TTS_OFFLINE === "1") {
-        throw new LocalTTSError("OFFLINE", `${model} is not downloaded yet and downloads are turned off.`);
+      if (options.offline || process.env.LOUDNESS_TTS_OFFLINE === "1") {
+        throw new TTSError("OFFLINE", `${model} is not downloaded yet and downloads are turned off.`);
       }
       await fetchTo(spec, file, name, options);
     }

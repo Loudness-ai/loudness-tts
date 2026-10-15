@@ -1,7 +1,7 @@
 """Tests for ttsprep: python -m unittest discover -s tests (from the package root, with src on the path)."""
 import unittest
 
-from local_tts.textprep import cut_points, prepare, US_WORDS
+from loudness_tts.textprep import cut_points, prepare, US_WORDS
 
 
 def said(text, locale='en-US', us_words=False):

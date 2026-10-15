@@ -1,6 +1,6 @@
 // End-to-end parity with the Python edition, with random variation off so both are repeatable: the same spoken text,
 // the same number of samples, the same word timings, the same loudness. Cases whose voice is not in the cache are
-// skipped. Set LOCAL_TTS_PY_AUDIO to a folder of the Python edition's samples for a sample-level comparison.
+// skipped. Set LOUDNESS_TTS_PY_AUDIO to a folder of the Python edition's samples for a sample-level comparison.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
@@ -24,7 +24,7 @@ for (const c of cases) {
     const m = loudness.measure(s.samples, s.sampleRate);
     assert.ok(Math.abs(m.integratedLufs - c.lufs) < 0.02, `loudness ${m.integratedLufs} vs ${c.lufs}`);
     assert.ok(Math.abs(m.truePeakDbtp - c.peak) < 0.05, `true peak ${m.truePeakDbtp} vs ${c.peak}`);
-    const dir = process.env.LOCAL_TTS_PY_AUDIO;
+    const dir = process.env.LOUDNESS_TTS_PY_AUDIO;
     if (dir && existsSync(`${dir}/${c.name}.f32`)) {
       const ref = new Float32Array(readFileSync(`${dir}/${c.name}.f32`).buffer.slice(0));
       let worst = 0;

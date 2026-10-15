@@ -3,7 +3,7 @@
 // handling as Piper (piper1-gpl 1.8: espeakbridge.c and phonemize_espeak.py), so the phonemes are identical to the
 // ones Piper and the Python edition produce. espeak-ng is GPL-3.0-or-later.
 import createEspeak, { type EspeakModule } from "./wasm/espeak.mjs";
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { platform } from "./platform.js";
 import { strip } from "./pyre.js";
 
@@ -56,7 +56,7 @@ export class Espeak {
     m.FS.writeFile(`${ROOT}/en_dict`, en);
     const espeak = new Espeak(m, indexLanguages(files));
     espeak.dictionaries.add("en");
-    if (espeak.call(m._lt_initialize, ROOT) < 0) throw new LocalTTSError("ENGINE_FAILED", "espeak-ng could not start.");
+    if (espeak.call(m._lt_initialize, ROOT) < 0) throw new TTSError("ENGINE_FAILED", "espeak-ng could not start.");
     return espeak;
   }
 
@@ -82,7 +82,7 @@ export class Espeak {
     }
     if (this.call(this.m._lt_set_voice, voice) !== 0) {
       this.current = "";
-      throw new LocalTTSError("ENGINE_FAILED", `espeak-ng has no voice "${voice}".`);
+      throw new TTSError("ENGINE_FAILED", `espeak-ng has no voice "${voice}".`);
     }
     this.current = voice;
   }
@@ -91,7 +91,7 @@ export class Espeak {
    * voice must have been selected with use(). */
   phonemize(text: string, vowelClusters?: Set<string>): string[][] {
     const ptr = this.call(this.m._lt_phonemes, text);
-    if (!ptr) throw new LocalTTSError("ENGINE_FAILED", "espeak-ng ran out of memory.");
+    if (!ptr) throw new TTSError("ENGINE_FAILED", "espeak-ng ran out of memory.");
     const raw = this.m.UTF8ToString(ptr);
     this.m._free(ptr);
     const all: string[][] = [];
@@ -159,7 +159,7 @@ export interface PhonemeConfig {
 export async function phonemizeForVoice(config: PhonemeConfig, text: string, vowelClusters?: Set<string>): Promise<string[][]> {
   if (config.phoneme_type === "text") return [Array.from(text.normalize("NFD"))];
   if (config.phoneme_type && config.phoneme_type !== "espeak") {
-    throw new LocalTTSError("ENGINE_FAILED", `Voices with ${config.phoneme_type} phonemes are not supported in JavaScript yet.`);
+    throw new TTSError("ENGINE_FAILED", `Voices with ${config.phoneme_type} phonemes are not supported in JavaScript yet.`);
   }
   const engine = await espeak();
   await engine.use(config.espeak.voice);

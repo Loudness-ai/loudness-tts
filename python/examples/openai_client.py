@@ -1,4 +1,4 @@
-"""Start the server first (local-tts serve), then: pip install openai && python examples/openai_client.py"""
+"""Start the server first (loudness-tts serve), then: pip install openai && python examples/openai_client.py"""
 from openai import OpenAI
 
 client = OpenAI(base_url="http://127.0.0.1:8880/v1", api_key="not-needed")

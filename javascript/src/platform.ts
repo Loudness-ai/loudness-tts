@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // What differs between Node (and Bun, Deno) and browsers: where voice files and espeak-ng data live, and file output.
 // The browser implementation is the default; the Node entry point (node.ts) installs the Node one.
-import { LocalTTSError } from "./errors.js";
+import { TTSError } from "./errors.js";
 import { Md5 } from "./md5.js";
 import { ORT_VERSION, VERSION } from "./version.js";
 
@@ -20,7 +20,7 @@ export interface Progress {
 
 export interface FetchOptions {
   offline?: boolean;
-  /** Where Node keeps voices (default: $LOCAL_TTS_HOME or the user cache folder). */
+  /** Where Node keeps voices (default: $LOUDNESS_TTS_HOME or the user cache folder). */
   root?: string;
   progress?: (p: Progress) => void;
   signal?: AbortSignal;
@@ -69,7 +69,7 @@ export async function download(spec: FileSpec, label: string, options: FetchOpti
         if (finished) break;
         if (done + value.length > spec.size) {
           await reader.cancel();
-          throw new LocalTTSError("CHECKSUM_MISMATCH", `${label} is larger than expected; download refused.`);
+          throw new TTSError("CHECKSUM_MISMATCH", `${label} is larger than expected; download refused.`);
         }
         out.set(value, done);
         done += value.length;
@@ -77,21 +77,21 @@ export async function download(spec: FileSpec, label: string, options: FetchOpti
       }
       const [, want, got] = await checksum(spec, out);
       if (done !== spec.size || got !== want) {
-        throw new LocalTTSError("CHECKSUM_MISMATCH", `${label} does not match its published checksum; it was not used.`);
+        throw new TTSError("CHECKSUM_MISMATCH", `${label} does not match its published checksum; it was not used.`);
       }
       return out;
     } catch (error) {
-      if (error instanceof LocalTTSError || options.signal?.aborted) throw error;
+      if (error instanceof TTSError || options.signal?.aborted) throw error;
       lastError = error;
       await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
     }
   }
-  throw new LocalTTSError("DOWNLOAD_FAILED", `Could not download ${label}: ${String(lastError)}`);
+  throw new TTSError("DOWNLOAD_FAILED", `Could not download ${label}: ${String(lastError)}`);
 }
 
 // ---------------------------------------------------------------- browsers
-const CACHE = "local-tts-v1";
-const MARK = "x-local-tts-checksum";
+const CACHE = "loudness-tts-v1";
+const MARK = "x-loudness-tts-checksum";
 
 const openCache = async (): Promise<Cache | null> => {
   try {
@@ -114,7 +114,7 @@ export class BrowserStore implements VoiceStore {
       const data = new Uint8Array(await hit.arrayBuffer());
       if (data.length === spec.size) return data;
     }
-    if (options.offline) throw new LocalTTSError("OFFLINE", `${model} is not downloaded yet and downloads are turned off.`);
+    if (options.offline) throw new TTSError("OFFLINE", `${model} is not downloaded yet and downloads are turned off.`);
     const data = await download(spec, name, options);
     await cache?.put(spec.url, new Response(data as BodyInit, { headers: { [MARK]: want, "content-type": "application/octet-stream" } }))
       .catch(() => undefined); // storage full: still usable for this page
@@ -141,7 +141,7 @@ export class BrowserStore implements VoiceStore {
   }
 }
 
-let espeakBase = `https://cdn.jsdelivr.net/npm/local-tts@${VERSION}/espeak-ng-data/`;
+let espeakBase = `https://cdn.jsdelivr.net/npm/loudness-tts@${VERSION}/espeak-ng-data/`;
 let onnxBase = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 const folder = (url: string): string => (url.endsWith("/") ? url : url + "/");
 
@@ -169,7 +169,7 @@ async function browserEspeakFile(name: string): Promise<Uint8Array> {
   const hit = await cache?.match(url);
   if (hit) return new Uint8Array(await hit.arrayBuffer());
   const response = await fetch(url);
-  if (!response.ok) throw new LocalTTSError("DOWNLOAD_FAILED", `Could not load speech data ${name} (HTTP ${response.status}).`);
+  if (!response.ok) throw new TTSError("DOWNLOAD_FAILED", `Could not load speech data ${name} (HTTP ${response.status}).`);
   const data = new Uint8Array(await response.arrayBuffer());
   await cache?.put(url, new Response(data as BodyInit)).catch(() => undefined);
   return data;

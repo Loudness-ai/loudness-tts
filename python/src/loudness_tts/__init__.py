@@ -1,16 +1,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""local-tts: fast, natural text to speech on your own computer or server, by Loudness.ai.
+"""loudness-tts: fast, natural text to speech on your own computer or server, by Loudness.ai.
 
-    import local_tts
-    local_tts.speak("Dr. Smith paid $5.50 on 4/5/2026.", "speech.wav")      # best English (US) voice
-    speech = local_tts.synthesize("Hola, ¿qué tal?", language="es-ES")
+    import loudness_tts
+    loudness_tts.speak("Dr. Smith paid $5.50 on 4/5/2026.", "speech.wav")      # best English (US) voice
+    speech = loudness_tts.synthesize("Hola, ¿qué tal?", language="es-ES")
     speech.save("hola.wav"); speech.save_srt("hola.srt")
-    for chunk in local_tts.stream("A long text, read sentence by sentence."):
+    for chunk in loudness_tts.stream("A long text, read sentence by sentence."):
         play(chunk.pcm())
-    local_tts.voices(language="de", sex="female")[:3]
+    loudness_tts.voices(language="de", sex="female")[:3]
 
 Voices are ranked by Loudness.ai's open voice study (https://loudness.ai/research/piper-tts-voices-ranked/) and
-downloaded once, with checksums, from their original source. Docs: https://github.com/Loudness-ai/local-tts
+downloaded once, with checksums, from their original source. Docs: https://github.com/Loudness-ai/loudness-tts
 """
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ from ._version import __version__
 from .catalog import Voice, find_voice, languages, voices
 from .downloader import cache_dir, downloaded_models, ensure_model, remove_model
 from .engine import TTS
-from .errors import CancelledError, LocalTTSError
+from .errors import CancelledError, TTSError
 from .speech import Speech, SpeechChunk
 
-__all__ = ["TTS", "Speech", "SpeechChunk", "Voice", "LocalTTSError", "CancelledError", "speak", "synthesize", "stream",
+__all__ = ["TTS", "Speech", "SpeechChunk", "Voice", "TTSError", "CancelledError", "speak", "synthesize", "stream",
            "voices", "languages", "find_voice", "download", "downloaded_models", "remove_model", "cache_dir", "__version__"]
 
 _default: Optional[TTS] = None

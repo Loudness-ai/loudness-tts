@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-message: "If you use local-tts, please cite it as below."
-title: "local-tts: natural text to speech on your own computer or server"
+message: "If you use loudness-tts, please cite it as below."
+title: "loudness-tts: natural text to speech on your own computer or server"
 type: software
 authors:
   - family-names: Shehzad
@@ -10,7 +10,7 @@ authors:
 version: 0.1.0
 date-released: 2026-10-16
 license: GPL-3.0-or-later
-repository-code: "https://github.com/Loudness-ai/local-tts"
+repository-code: "https://github.com/Loudness-ai/loudness-tts"
 url: "https://loudness.ai/developers/"
 keywords: [text-to-speech, tts, piper, offline, speech-synthesis, openai-compatible]
 references:

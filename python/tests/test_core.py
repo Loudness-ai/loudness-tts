@@ -10,11 +10,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-import local_tts
-from local_tts import downloader as download, loudness
-from local_tts.catalog import AUTO_USE, find_voice, openai_voice_map, voices
-from local_tts.errors import LocalTTSError
-from local_tts.speech import resample, srt, subtitle_cues, vtt, wav_bytes
+import loudness_tts
+from loudness_tts import downloader as download, loudness
+from loudness_tts.catalog import AUTO_USE, find_voice, openai_voice_map, voices
+from loudness_tts.errors import TTSError
+from loudness_tts.speech import resample, srt, subtitle_cues, vtt, wav_bytes
 
 
 # ---------------------------------------------------------------- catalogue
@@ -38,7 +38,7 @@ def test_find_voice_by_id_model_and_openai_name():
     assert find_voice("en_US-libritts-high").model == "en_US-libritts-high"
     assert find_voice("nova").sex == "F" and find_voice("onyx").sex == "M"
     assert set(openai_voice_map()) >= {"alloy", "echo", "fable", "onyx", "nova", "shimmer"}
-    with pytest.raises(LocalTTSError) as error:
+    with pytest.raises(TTSError) as error:
         find_voice("no-such-voice")
     assert error.value.code == "VOICE_NOT_FOUND"
 
@@ -128,21 +128,21 @@ def test_download_verifies_checksum(tmp_path, monkeypatch):
     download._fetch(good["url"], target, good, "m.onnx", None, 10)
     assert target.read_bytes() == payload and download._verified(target, good)
     bad = dict(good, md5="0" * 32)
-    with pytest.raises(LocalTTSError) as error:
+    with pytest.raises(TTSError) as error:
         download._fetch(bad["url"], tmp_path / "cache" / "n.onnx", bad, "n.onnx", None, 10)
     assert error.value.code == "CHECKSUM_MISMATCH"
     assert not (tmp_path / "cache" / "n.onnx").exists()
 
 
 def test_offline_refuses_missing_voice(tmp_path):
-    with pytest.raises(LocalTTSError) as error:
+    with pytest.raises(TTSError) as error:
         download.ensure_model("en_US-libritts-high", root=tmp_path, offline=True)
     assert error.value.code == "OFFLINE"
 
 
 # ---------------------------------------------------------------- CLI
 def run_cli(*args):
-    return subprocess.run([sys.executable, "-m", "local_tts", *args], capture_output=True, text=True, timeout=120)
+    return subprocess.run([sys.executable, "-m", "loudness_tts", *args], capture_output=True, text=True, timeout=120)
 
 
 def test_cli_voices_json():
@@ -158,4 +158,4 @@ def test_cli_error_is_reported():
 
 
 def test_version():
-    assert local_tts.__version__ and run_cli("--version").stdout.startswith("local-tts ")
+    assert loudness_tts.__version__ and run_cli("--version").stdout.startswith("loudness-tts ")

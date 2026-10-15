@@ -1,4 +1,4 @@
-"""Development helper: copy voice models that are already on disk into a local-tts cache, verifying each against the
+"""Development helper: copy voice models that are already on disk into a loudness-tts cache, verifying each against the
 catalogue's checksum exactly as a download would, so tests run without network access.
   python3 scripts/seed_cache.py <cache dir> <folder with .onnx files> [model ...]"""
 import hashlib
@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'python/src'))
-from local_tts.catalog import model_info  # noqa: E402
-from local_tts.downloader import model_paths  # noqa: E402
+from loudness_tts.catalog import model_info  # noqa: E402
+from loudness_tts.downloader import model_paths  # noqa: E402
 
 root, folder, wanted = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3:]
 names = {'en_US-clean100-medium': 'clean100', 'en_US-manyvoice-medium': 'mv2', 'en_IE-jenny-medium': 'jenny'}

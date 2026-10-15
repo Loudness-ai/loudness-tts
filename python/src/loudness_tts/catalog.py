@@ -4,7 +4,7 @@
 Scores come from Loudness.ai's open voice study (LA-RB-2026-003,
 https://loudness.ai/research/piper-tts-voices-ranked/). Compare scores within one language only.
 
-    from local_tts import voices, find_voice
+    from loudness_tts import voices, find_voice
     voices(language="es")                      # Spanish voices, best first
     voices(language="en-US", sex="female")
     find_voice("auto", language="de-DE")       # the best German voice
@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass
 from importlib import resources
 from typing import Optional
 
-from .errors import LocalTTSError
+from .errors import TTSError
 
 USE_CLASSES = ("none", "credit", "copyleft", "unclear")
 # Voices picked automatically have a clear licence for commercial use (no conditions, or a credit line).
@@ -63,7 +63,7 @@ class Voice:
 
 @functools.lru_cache(maxsize=1)
 def _data() -> dict:
-    text = resources.files("local_tts").joinpath("data/voices.json").read_text(encoding="utf-8")
+    text = resources.files("loudness_tts").joinpath("data/voices.json").read_text(encoding="utf-8")
     return json.loads(text)
 
 
@@ -88,7 +88,7 @@ def model_info(model: str) -> dict:
     try:
         return _data()["models"][model]
     except KeyError:
-        raise LocalTTSError("VOICE_NOT_FOUND", f"No voice model called {model!r} is in the catalogue.") from None
+        raise TTSError("VOICE_NOT_FOUND", f"No voice model called {model!r} is in the catalogue.") from None
 
 
 def _matches_language(v: Voice, language: str) -> bool:
@@ -120,7 +120,7 @@ def voices(language: Optional[str] = None, *, sex: Optional[str] = None, use=Non
     elif sort in ("overall", "natural", "clear"):
         out.sort(key=lambda v: (-getattr(v, sort), v.id))
     else:
-        raise LocalTTSError("OPTION_INVALID", "sort must be overall, natural, clear or name.")
+        raise TTSError("OPTION_INVALID", "sort must be overall, natural, clear or name.")
     return out
 
 
@@ -174,11 +174,11 @@ def find_voice(voice: Optional[str] = "auto", language: Optional[str] = None) ->
     mapped = openai_voice_map().get(voice.lower())
     if mapped:
         return by_id[mapped]
-    raise LocalTTSError("VOICE_NOT_FOUND", f"No voice called {voice!r}. Run `local-tts voices` to see them.")
+    raise TTSError("VOICE_NOT_FOUND", f"No voice called {voice!r}. Run `loudness-tts voices` to see them.")
 
 
 def _best(language: str) -> Voice:
     pool = voices(language, use=AUTO_USE) or voices(language)
     if not pool:
-        raise LocalTTSError("VOICE_NOT_FOUND", f"No voice for {language!r}. Run `local-tts languages` to see the list.")
+        raise TTSError("VOICE_NOT_FOUND", f"No voice for {language!r}. Run `loudness-tts languages` to see the list.")
     return pool[0]

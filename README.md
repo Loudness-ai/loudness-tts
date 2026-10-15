@@ -1,10 +1,10 @@
-# local-tts
+# loudness-tts
 
 **Fast, natural text to speech on your own computer, server or web page.** Free, offline after the first voice download,
 no API key. Python and JavaScript/TypeScript. By [Loudness.ai](https://loudness.ai/).
 
 - **1,683 ranked voices in 32 language variants:** every Piper voice that allows commercial use, scored for naturalness
-  and clarity in [our open study](https://loudness.ai/research/piper-tts-voices-ranked/). `local-tts` picks the best voice
+  and clarity in [our open study](https://loudness.ai/research/piper-tts-voices-ranked/). `loudness-tts` picks the best voice
   for your language automatically and shows each voice's licence and credit line.
 - **Reads like a person:** prices, dates, times, units, phone numbers, abbreviations and Roman numerals become words
   (English and Spanish), with natural pauses, calmer delivery and click-free joins
@@ -16,8 +16,8 @@ no API key. Python and JavaScript/TypeScript. By [Loudness.ai](https://loudness.
   **OpenAI-compatible speech server** and Docker. Both editions produce the same speech.
 
 ```sh
-pip install local-tts            # or: npm install local-tts
-local-tts "Dr. Smith paid $5.50 on 4/5/2026." -o speech.wav --srt speech.srt
+pip install loudness-tts            # or: npm install loudness-tts
+loudness-tts "Dr. Smith paid $5.50 on 4/5/2026." -o speech.wav --srt speech.srt
 ```
 
 The first run downloads the best English (US) voice (about 78 MB, checked against its published checksum). Try voices in
@@ -27,26 +27,26 @@ the browser first: [Piper Voice Explorer](https://huggingface.co/spaces/Loudness
 ## Python
 
 ```python
-import local_tts
+import loudness_tts
 
-local_tts.speak("Hello! The meeting starts at 9:30 AM.", "hello.wav")          # best English (US) voice
+loudness_tts.speak("Hello! The meeting starts at 9:30 AM.", "hello.wav")          # best English (US) voice
 
-speech = local_tts.synthesize("Llegamos el 15/10/2026 a las 10:30.", language="es-ES")
+speech = loudness_tts.synthesize("Llegamos el 15/10/2026 a las 10:30.", language="es-ES")
 speech.save("es.wav")            # 16-bit WAV (speech.save(path, bit_depth=24) for 24-bit)
 speech.save_srt("es.srt")        # subtitles; speech.vtt() for web players
 print(speech.spoken)             # what the voice actually read
 print(speech.voice.credit)       # credit line, when the voice's licence asks for one
 
-for chunk in local_tts.stream("A long text is spoken sentence by sentence, so playback starts at once."):
+for chunk in loudness_tts.stream("A long text is spoken sentence by sentence, so playback starts at once."):
     player.write(chunk.pcm())    # 16-bit mono PCM at chunk.sample_rate
 
-local_tts.voices(language="en-US", sex="female")[:3]                         # best English (US) female voices
+loudness_tts.voices(language="en-US", sex="female")[:3]                         # best English (US) female voices
 ```
 
 For services, keep one engine so voices stay loaded:
 
 ```python
-from local_tts import TTS
+from loudness_tts import TTS
 
 tts = TTS(language="en-US", threads=2, cache_size=4)
 tts.preload()                                         # download and load now, not on the first request
@@ -64,13 +64,13 @@ speech = tts.synthesize(text, voice="en_US-libritts-high-s118", speed=1.1, pause
 | `normalize`, `target_lufs`, `true_peak_db` | True, −16, −1.5 | loudness normalization |
 | `cancel`, `timeout` | None | a `threading.Event` (or callable) to stop, and a time limit in seconds |
 
-Word timings are estimated from the text by default; `pip install "local-tts[timings]"` makes them exact (taken from the
+Word timings are estimated from the text by default; `pip install "loudness-tts[timings]"` makes them exact (taken from the
 voice model's own sound durations).
 
 ## JavaScript and TypeScript
 
 ```js
-import { speak, synthesize, stream } from "local-tts";      // npm install local-tts · Deno: "npm:local-tts"
+import { speak, synthesize, stream } from "loudness-tts";      // npm install loudness-tts · Deno: "npm:loudness-tts"
 
 await speak("Hello! The meeting starts at 9:30 AM.", "hello.wav");                // Node, Bun, Deno
 const speech = await synthesize("Llegamos el 15/10/2026 a las 10:30.", { language: "es-ES" });
@@ -84,18 +84,18 @@ inside web pages, on the visitor's device. Phonemes, text preparation and word t
 ## Command line
 
 ```sh
-local-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
-echo "Text from a pipe" | local-tts - > out.wav
-local-tts voices --language de --min-score 75
-local-tts languages
-local-tts download --language de-DE          # for offline machines and Docker images
-local-tts doctor --synthesize                # check the installation
+loudness-tts "Text to speak" -o out.wav [--voice ID] [--language es-ES] [--speed 1.1] [--srt out.srt] [--vtt out.vtt]
+echo "Text from a pipe" | loudness-tts - > out.wav
+loudness-tts voices --language de --min-score 75
+loudness-tts languages
+loudness-tts download --language de-DE          # for offline machines and Docker images
+loudness-tts doctor --synthesize                # check the installation
 ```
 
 ## OpenAI-compatible server
 
 ```sh
-local-tts serve --port 8880                  # add --host 0.0.0.0 --api-key SECRET to serve other machines
+loudness-tts serve --port 8880                  # add --host 0.0.0.0 --api-key SECRET to serve other machines
 ```
 
 ```python
@@ -114,13 +114,13 @@ the audio, word timings, SRT and VTT. Text is never logged or stored.
 ## Docker
 
 ```sh
-docker run -p 8880:8880 -v local-tts:/data ghcr.io/loudness-ai/local-tts
+docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts
 ```
 
 ## Voices and licences
 
 Every voice in the catalogue allows commercial use. About 1,600 ask for a credit line (CC BY, CC BY-SA, Apache 2.0),
-51 need nothing, two are copyleft and 17 have unclear terms; `local-tts` never picks those last two groups on its own.
+51 need nothing, two are copyleft and 17 have unclear terms; `loudness-tts` never picks those last two groups on its own.
 `voice.licence`, `voice.use` and `voice.credit` tell you what applies. Voice files come from their original sources (the
 official Piper voices at a pinned revision, or the community author) and are verified before use. The ranking and its
 method: [Open Piper TTS Voices Ranked](https://loudness.ai/research/piper-tts-voices-ranked/), with the data on
@@ -129,21 +129,21 @@ method: [Open Piper TTS Voices Ranked](https://loudness.ai/research/piper-tts-vo
 ## Privacy
 
 Speech is made on your machine. The only network requests are voice downloads (one per voice, from Hugging Face or the
-voice author). Set `LOCAL_TTS_OFFLINE=1` to forbid them; `LOCAL_TTS_HOME` moves the voice cache.
+voice author). Set `LOUDNESS_TTS_OFFLINE=1` to forbid them; `LOUDNESS_TTS_HOME` moves the voice cache.
 
 ## Licence and credits
 
 GPL-3.0-or-later, because it builds on [Piper](https://github.com/OHF-Voice/piper1-gpl) and espeak-ng. The text
-preparation layer (`local_tts/textprep.py`) is Apache-2.0 and can be reused on its own. Voices keep their own licences.
-If local-tts helps your project, a link to [loudness.ai](https://loudness.ai/) is appreciated (not required).
+preparation layer (`loudness_tts/textprep.py`) is Apache-2.0 and can be reused on its own. Voices keep their own licences.
+If loudness-tts helps your project, a link to [loudness.ai](https://loudness.ai/) is appreciated (not required).
 
 ```bibtex
-@software{local_tts,
+@software{loudness_tts,
   author = {Shehzad, Asad},
-  title = {local-tts: natural text to speech on your own computer or server},
+  title = {loudness-tts: natural text to speech on your own computer or server},
   publisher = {Loudness.ai},
   year = {2026},
-  url = {https://github.com/Loudness-ai/local-tts}
+  url = {https://github.com/Loudness-ai/loudness-tts}
 }
 ```
 

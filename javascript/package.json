@@ -1,5 +1,5 @@
 {
-  "name": "local-tts",
+  "name": "loudness-tts",
   "version": "0.1.0",
   "description": "Fast, natural text to speech on your own computer, server or web page: 1,683 ranked voices, numbers and dates read as words, word timings, SRT/VTT subtitles, OpenAI-compatible server. No API key.",
   "keywords": [
@@ -10,6 +10,7 @@
     "piper-tts",
     "offline",
     "local",
+    "local-tts",
     "self-hosted",
     "voice",
     "subtitles",
@@ -25,10 +26,10 @@
   "homepage": "https://loudness.ai/developers/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Loudness-ai/local-tts.git",
+    "url": "git+https://github.com/Loudness-ai/loudness-tts.git",
     "directory": "javascript"
   },
-  "bugs": "https://github.com/Loudness-ai/local-tts/issues",
+  "bugs": "https://github.com/Loudness-ai/loudness-tts/issues",
   "author": "Asad Shehzad <asad@loudness.ai> (https://loudness.ai/)",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -64,7 +65,7 @@
   "main": "./dist/node.js",
   "types": "./dist/node.d.ts",
   "bin": {
-    "local-tts": "dist/cli.js"
+    "loudness-tts": "dist/cli.js"
   },
   "files": [
     "dist",

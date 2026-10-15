@@ -1,6 +1,6 @@
 """Repeatable end-to-end reference from the Python edition (random variation off), for the JavaScript edition's test.
 
-    LOCAL_TTS_HOME=<cache with the voices> .venv/bin/python scripts/make_js_synthesis_fixture.py [audio dir]
+    LOUDNESS_TTS_HOME=<cache with the voices> .venv/bin/python scripts/make_js_synthesis_fixture.py [audio dir]
 
 Writes javascript/test/fixtures/synthesis.json (spoken text, timings in UTF-16 offsets, sample counts, loudness) and,
 when an audio dir is given, the float32 samples of each case for a closer local comparison.
@@ -12,8 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "python" / "src"))
 
-from local_tts import engine, loudness  # noqa: E402
-from local_tts.downloader import downloaded_models  # noqa: E402
+from loudness_tts import engine, loudness  # noqa: E402
+from loudness_tts.downloader import downloaded_models  # noqa: E402
 
 engine.CALM = 0.0
 TEXTS = {
@@ -42,8 +42,8 @@ def main():
     for model, texts in TEXTS.items():
         if model not in have:
             continue
-        voice = next(v.id for v in __import__("local_tts").voices() if v.model == model and v.rank == min(
-            x.rank for x in __import__("local_tts").voices() if x.model == model))
+        voice = next(v.id for v in __import__("loudness_tts").voices() if v.model == model and v.rank == min(
+            x.rank for x in __import__("loudness_tts").voices() if x.model == model))
         for k, text in enumerate(texts):
             s = tts.synthesize(text, voice=voice)
             t = s.timings

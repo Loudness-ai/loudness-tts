@@ -2,7 +2,7 @@
 """A local speech server compatible with OpenAI's speech API, so existing clients can switch to local voices by
 changing their base URL. Standard library only.
 
-    local-tts serve --port 8880
+    loudness-tts serve --port 8880
     curl http://127.0.0.1:8880/v1/audio/speech -H "Content-Type: application/json" \
          -d '{"model": "tts-1", "input": "Hello there!", "voice": "nova", "response_format": "wav"}' -o hello.wav
 
@@ -27,7 +27,7 @@ from urllib.parse import parse_qs, urlparse
 from ._version import __version__
 from .catalog import find_voice, voices
 from .engine import TTS
-from .errors import LocalTTSError
+from .errors import TTSError
 from .formats import CONTENT_TYPES, PCM_RATE, encode, ffmpeg_path
 from .speech import pcm16, resample
 
@@ -60,7 +60,7 @@ class SpeechServer(ThreadingHTTPServer):
 
 class Handler(BaseHTTPRequestHandler):
     server: SpeechServer
-    server_version = f"local-tts/{__version__}"
+    server_version = f"loudness-tts/{__version__}"
     sys_version = ""
     protocol_version = "HTTP/1.1"
 
@@ -99,13 +99,13 @@ class Handler(BaseHTTPRequestHandler):
     def _body(self):
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0 or length > MAX_BODY:
-            raise LocalTTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB.")
+            raise TTSError("TEXT_INVALID", "Send a JSON body of up to 1 MB.")
         try:
             body = json.loads(self.rfile.read(length))
         except (ValueError, UnicodeDecodeError):
-            raise LocalTTSError("TEXT_INVALID", "Send valid JSON.") from None
+            raise TTSError("TEXT_INVALID", "Send valid JSON.") from None
         if not isinstance(body, dict):
-            raise LocalTTSError("TEXT_INVALID", "Send a JSON object.")
+            raise TTSError("TEXT_INVALID", "Send a JSON object.")
         return body
 
     @staticmethod
@@ -115,7 +115,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 speed = min(2.0, max(0.5, float(speed)))  # OpenAI allows 0.25-4; Piper sounds right within 0.5-2
             except (TypeError, ValueError):
-                raise LocalTTSError("OPTION_INVALID", "speed must be a number.") from None
+                raise TTSError("OPTION_INVALID", "speed must be a number.") from None
         options = {k: body[k] for k in ("language", "pause", "expressiveness", "rhythm") if body.get(k) is not None}
         return {"voice": body.get("voice") or None, "speed": speed if speed is not None else 1.0, **options}
 
@@ -133,8 +133,8 @@ class Handler(BaseHTTPRequestHandler):
             self._error(401, "UNAUTHORIZED", "Missing or wrong API key.")
             return
         if url.path == "/v1/models":
-            self._json(200, {"object": "list", "data": [{"id": m, "object": "model", "owned_by": "local-tts"}
-                                                         for m in ("local-tts", "tts-1", "tts-1-hd", "gpt-4o-mini-tts")]})
+            self._json(200, {"object": "list", "data": [{"id": m, "object": "model", "owned_by": "loudness-tts"}
+                                                         for m in ("loudness-tts", "tts-1", "tts-1-hd", "gpt-4o-mini-tts")]})
         elif url.path in ("/v1/audio/voices", "/v1/voices"):
             q = parse_qs(url.query)
             found = voices(q.get("language", [None])[0], sex=q.get("sex", [None])[0])
@@ -180,7 +180,7 @@ class Handler(BaseHTTPRequestHandler):
             data = encode(speech.samples, speech.sample_rate, fmt)
             self._headers(200, CONTENT_TYPES[fmt], len(data), extra)
             self.wfile.write(data)
-        except LocalTTSError as error:
+        except TTSError as error:
             self._error(STATUS.get(error.code, 500), error.code, error.message)
         except (BrokenPipeError, ConnectionResetError):
             pass
@@ -213,12 +213,12 @@ class Handler(BaseHTTPRequestHandler):
 def serve(host: str = "127.0.0.1", port: int = 8880, *, tts: TTS = None, workers: int = 1, api_key: str = "",
           cors: str = "", preload: bool = True, quiet: bool = False) -> None:
     tts = tts or TTS()
-    api_key = api_key or os.environ.get("LOCAL_TTS_API_KEY", "")
+    api_key = api_key or os.environ.get("LOUDNESS_TTS_API_KEY", "")
     if preload:
         tts.preload()
     server = SpeechServer((host, port), tts, workers=workers, api_key=api_key, cors=cors)
     if not quiet:
-        print(f"local-tts {__version__} serving on http://{host}:{port}  (OpenAI-compatible: /v1/audio/speech)", flush=True)
+        print(f"loudness-tts {__version__} serving on http://{host}:{port}  (OpenAI-compatible: /v1/audio/speech)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
