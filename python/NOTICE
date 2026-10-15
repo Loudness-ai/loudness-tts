@@ -1,0 +1,12 @@
+local-tts by Loudness.ai (https://loudness.ai), Copyright 2026 Asad Shehzad.
+
+local-tts is free software under the GNU General Public License, version 3 or later (LICENSE). It uses Piper
+(https://github.com/OHF-Voice/piper1-gpl, GPL-3.0) and espeak-ng (GPL-3.0), installed as dependencies.
+
+local_tts/textprep.py is the ttsprep text preparation layer, Apache License 2.0 (LICENSE-APACHE); it can be reused
+under that licence on its own.
+
+Voice models are not included. They are downloaded from their original sources and keep their own licences; each
+voice's licence, training data and credit line are in local_tts/data/voices.json and shown by `local-tts voices` and
+Voice.credit. Voice scores come from Loudness.ai's open study LA-RB-2026-003 (CC BY 4.0):
+https://loudness.ai/research/piper-tts-voices-ranked/

@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use local-tts, please cite it as below."
+title: "local-tts: natural text to speech on your own computer or server"
+type: software
+authors:
+  - family-names: Shehzad
+    given-names: Asad
+    affiliation: Loudness.ai
+    email: asad@loudness.ai
+version: 0.1.0
+date-released: 2026-10-16
+license: GPL-3.0-or-later
+repository-code: "https://github.com/Loudness-ai/local-tts"
+url: "https://loudness.ai/developers/"
+keywords: [text-to-speech, tts, piper, offline, speech-synthesis, openai-compatible]
+references:
+  - type: report
+    title: "Open Piper TTS Voices Ranked: Naturalness, Clarity and Licences"
+    authors: [{family-names: Shehzad, given-names: Asad}]
+    institution: {name: Loudness.ai}
+    number: LA-RB-2026-003
+    year: 2026
+    url: "https://loudness.ai/research/piper-tts-voices-ranked/"
+  - type: report
+    title: "Teaching Piper TTS to Read: Text Normalization and Word Timings"
+    authors: [{family-names: Shehzad, given-names: Asad}]
+    institution: {name: Loudness.ai}
+    number: LA-RB-2026-002
+    year: 2026
+    doi: 10.5281/zenodo.23392103

@@ -1,0 +1,16 @@
+# Changelog
+
+## 0.1.0 (2026-10-16)
+
+First release of the Python edition.
+
+- Text to speech with every commercially usable Piper voice (1,683 voices, 32 language variants), ranked by
+  Loudness.ai's open voice study; automatic best-voice choice per language; licences and credit lines built in.
+- Verified voice downloads (size and checksum) from the original sources, then fully offline.
+- Text preparation for English and Spanish (money, dates, times, units, phone numbers, abbreviations, Roman numerals),
+  natural pauses, calmer delivery, click-free joins, American pronunciations for US voices trained on British phonemes.
+- Loudness normalization (−16 LUFS, true peak ≤ −1.5 dBTP) without FFmpeg; word timings; SRT and VTT subtitles.
+- Streaming by sentence, cancellation, timeouts, bounded text length.
+- Command line (`say`, `voices`, `languages`, `download`, `serve`, `cache`, `doctor`).
+- OpenAI-compatible speech server (`/v1/audio/speech`, streamed PCM, optional API key and CORS) and a JSON endpoint
+  with timings and subtitles.
