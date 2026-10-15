@@ -9,6 +9,8 @@ const ready = (await downloadedModels()).includes(EN);
 const tts = new TTS({ offline: true });
 
 test("speech is normalized, timed and subtitled", { skip: !ready && `${EN} is not in the cache` }, async () => {
+  await tts.preload(); // speed is measured on a loaded voice
+  await tts.synthesize("Warm up.");
   const s = await tts.synthesize("Dr. Smith paid $5.50 on 4/5/2026. Call +1 555-123-4567, please.");
   const m = loudness.measure(s.samples, s.sampleRate);
   assert.ok(Math.abs(m.integratedLufs + 16) <= 0.3, `loudness ${m.integratedLufs}`);
