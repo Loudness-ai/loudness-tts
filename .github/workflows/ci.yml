@@ -41,11 +41,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: "${{ matrix.node }}", cache: npm, cache-dependency-path: javascript/package-lock.json}
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - run: pip install piper-tts==1.8.0    # espeak-ng data, checked against espeak-ng-data/MANIFEST.json
       - run: npm ci
-      - run: node scripts/espeak-data.mjs
+      - run: node scripts/espeak-data.mjs    # espeak-ng data from piper-tts 1.8.0, checked against MANIFEST.json
       - run: npm run build
       - run: npm test
   javascript-synthesis:
@@ -56,9 +53,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: "22", cache: npm, cache-dependency-path: javascript/package-lock.json}
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - run: pip install piper-tts==1.8.0
       - run: npm ci && node scripts/espeak-data.mjs && npm run build
       - run: node dist/cli.js download en_US-clean100-medium en_IE-jenny-medium -q
       - run: npm test

@@ -15,7 +15,7 @@ JavaScript edition:
 ```sh
 cd javascript
 npm ci
-pip install piper-tts==1.8.0 && node scripts/espeak-data.mjs   # espeak-ng data, checked against its manifest
+node scripts/espeak-data.mjs      # espeak-ng data from piper-tts 1.8.0, checked against its manifest
 npm run build && npm test
 ```
 
