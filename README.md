@@ -127,6 +127,8 @@ the audio, word timings, SRT and VTT. Text is never logged or stored.
 docker run -p 8880:8880 -v loudness-tts:/data ghcr.io/loudness-ai/loudness-tts
 ```
 
+The image is built for amd64 and arm64; the arm64 image is tested on an Apple M4 Mac.
+
 ## Voices and licences
 
 Every voice in the catalogue allows commercial use. About 1,600 ask for a credit line (CC BY, CC BY-SA, Apache 2.0),
